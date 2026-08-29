@@ -5,12 +5,12 @@ using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS;
 
-public static class CustomOverworldLoaderFuncs
+public static class BOSOverworldLoaderFuncs
 {
     // vanilla OverworldLoader loads overworld on separate thread
     // and copying what they do makes it look very clean :D
     
-    private static CustomOverworld overworld;
+    private static BOSOverworld overworld;
     private static bool loaded;
     private static OverworldLoader refloader;
     private static Thread activeThread;
@@ -38,7 +38,7 @@ public static class CustomOverworldLoaderFuncs
 
     private static void LoadThread()
     {
-        overworld = new CustomOverworld(refloader);
+        overworld = new BOSOverworld(refloader);
         overworld.Entities.UpdateLists();
         loaded = true;
         activeThread.Priority = ThreadPriority.Normal;
