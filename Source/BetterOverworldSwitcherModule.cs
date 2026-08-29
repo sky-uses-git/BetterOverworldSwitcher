@@ -25,11 +25,11 @@ public class BetterOverworldSwitcherModule : EverestModule {
 #endif
     }
 
-    public override void Load() {
-        // TODO: apply any hooks that should always be active
+    public override void Load()
+    {
+        Everest.Events.GameLoader.OnLoadThread += BOSHooks.HookToOverworldLoader;
     }
 
     public override void Unload() {
-        // TODO: unapply any hooks applied in Load()
     }
 }
