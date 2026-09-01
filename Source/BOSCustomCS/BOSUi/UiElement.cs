@@ -75,7 +75,7 @@ public class UiElement : Entity
     private void dbg_DrawInfo()
     {
         Vector2 idsize = Draw.DefaultFont.MeasureString(id);
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.Additive);
+        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
         Draw.Rect(RealPosition,idsize.X,idsize.Y,Color.Red);
         Draw.HollowRect(RealPosition,RealSize.X,RealSize.Y,Color.Red);
         Draw.Text(Draw.DefaultFont,id,RealPosition,Color.LawnGreen);

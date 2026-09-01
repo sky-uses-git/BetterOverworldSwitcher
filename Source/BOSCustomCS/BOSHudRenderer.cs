@@ -41,11 +41,12 @@ public class BOSHudRenderer : Renderer
             base.Update(scene);
             return;
         }
-        if (MInput.Keyboard.Pressed(Keys.W)) uiroot.SelectUp();
-        if (MInput.Keyboard.Pressed(Keys.A)) uiroot.SelectLeft();
-        if (MInput.Keyboard.Pressed(Keys.S)) uiroot.SelectDown();
-        if (MInput.Keyboard.Pressed(Keys.D)) uiroot.SelectRight();
-        if (MInput.Keyboard.Pressed(Keys.Enter)) uiroot.Press();
+        if (Input.MenuUp.Pressed) uiroot.SelectUp();
+        if (Input.MenuLeft.Pressed) uiroot.SelectLeft();
+        if (Input.MenuDown.Pressed) uiroot.SelectDown();
+        if (Input.MenuRight.Pressed) uiroot.SelectRight();
+        if (Input.MenuConfirm.Pressed) uiroot.Press();
+        if (Input.MenuCancel.Pressed) uiroot.Cancel();
         uiroot.Update();
         base.Update(scene);
     }

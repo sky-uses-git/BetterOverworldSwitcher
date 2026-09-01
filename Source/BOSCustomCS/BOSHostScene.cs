@@ -44,4 +44,10 @@ public class BOSHostScene : Scene
         Instance = null;
         base.End();
     }
+
+    public void LoadVanilla()
+    {
+        BOSHooks.doVanilla = true;
+        Engine.Scene = new OverworldLoader(Overworld.StartMode.Titlescreen);
+    }
 }

@@ -64,6 +64,10 @@ public class UiRoot : UiElement
             Selected.InvokePressed();
         }
     }
+    public virtual IEnumerable Cancel()
+    {
+        return null;
+    }
 
     public virtual IEnumerable Enter()
     {

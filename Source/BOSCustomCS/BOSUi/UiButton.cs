@@ -50,7 +50,7 @@ public class UiButton : UiFrame
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
         Vector2 txoffs = alignoffsets[(int)TextAlign];
         Vector2 txsize = Draw.DefaultFont.MeasureString(Value);
-        Vector2 addpos = (Size - txsize)*txoffs;
+        Vector2 addpos = (RealSize - txsize)*txoffs;
         Draw.Text(Draw.DefaultFont,Value,RealPosition+addpos,TextColor);
         Draw.SpriteBatch.End();
         BackgroundColor = oldbkg;
