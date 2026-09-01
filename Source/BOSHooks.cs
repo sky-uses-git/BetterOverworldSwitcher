@@ -7,6 +7,6 @@ public static class BOSHooks
 {
     public static void HookToOverworldLoader()
     {
-        On.Celeste.OverworldLoader.Begin += ((orig, self) => BOSCustomCS.BOSOverworldLoaderFuncs.Begin(self));
+        On.Celeste.OverworldLoader.Begin += ((orig, self) => BOSCustomCS.BOSLoaderFuncs.Begin(self));
     }
 }

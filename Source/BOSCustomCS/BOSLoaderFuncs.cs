@@ -5,18 +5,19 @@ using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS;
 
-public static class BOSOverworldLoaderFuncs
+public class BOSLoaderFuncs
 {
     // vanilla OverworldLoader loads overworld on separate thread
     // and copying what they do makes it look very clean :D
     
-    private static BOSOverworld overworld;
+    private static BOSHostScene overworld;
     private static bool loaded;
     private static OverworldLoader refloader;
     private static Thread activeThread;
 
     public static void Begin(OverworldLoader self)
     {
+        loaded = false;
         // OverworldLoader is not initialized yet
         // and won't go thru vanilla init (bad?)
         refloader = self;
@@ -28,8 +29,11 @@ public static class BOSOverworldLoaderFuncs
         }
         self.RendererList.UpdateLists();
 
+        Session sesh = null;
+        if (SaveData.Instance != null) sesh = SaveData.Instance.CurrentSession_Safe;
+        
         Entity handoverEnt = new Entity();
-        handoverEnt.Add(new Coroutine(Routine()));
+        handoverEnt.Add(new Coroutine(Routine(sesh)));
         self.Add(handoverEnt);
         activeThread = Thread.CurrentThread;
         activeThread.Priority = ThreadPriority.Lowest;
@@ -38,13 +42,13 @@ public static class BOSOverworldLoaderFuncs
 
     private static void LoadThread()
     {
-        overworld = new BOSOverworld(refloader);
+        overworld = new BOSHostScene(refloader);
         overworld.Entities.UpdateLists();
         loaded = true;
         activeThread.Priority = ThreadPriority.Normal;
     }
 
-    private static IEnumerator Routine()
+    private static IEnumerator Routine(Session session)
     {
         while (!loaded) yield return null;
         Engine.Scene = overworld;

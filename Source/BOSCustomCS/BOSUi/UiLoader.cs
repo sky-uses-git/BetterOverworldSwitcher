@@ -1,0 +1,221 @@
+﻿using System.Collections;
+using Microsoft.Xna.Framework;
+using Monocle;
+
+namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
+
+public static class UiLoader
+{
+    public static UiRoot LoadFromXML(string filename)
+    {
+        return null;
+    }
+
+    public static UiRoot Load(string id)
+    {
+        Logger.Info("BOS","load ui "+id+" called");
+        if (id.Equals("root")) return loadroot();
+        if (id.Equals("fileselect")) return loadfilesel();
+        if (id.Equals("chapselect")) return loadcs();
+        return null;
+    }
+
+    private static UiRoot loadroot()
+    {
+        UiRoot root = new();
+        root.Size = Vector2.Zero;
+        root.SizeOffset = Vector2.One;
+        UiLabel labelTest = new("BetterOverworldSwitcher Host",new Vector2(-200,-40),new Vector2(0.5f,0.15f));
+        labelTest.BackgroundColor = Color.Black * .4f;
+        labelTest.Size = new Vector2(400,80);
+        root.AddChild(labelTest);
+        UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
+        buttonsGrp.Size = new Vector2(800, 500);
+        UiButton csbutton = new("file select", new Vector2(-100,0), new Vector2(.5f,0f));
+        UiButton dbgbutton = new("debug", new Vector2(-100,-20), new Vector2(.5f,.25f));
+        UiButton button3 = new("hello button3", new Vector2(-100,-40), new Vector2(.5f,.5f));
+        UiButton button4 = new("hello button4", new Vector2(-100,-60), new Vector2(.5f,.75f));
+        UiButton button5 = new("hello button5", new Vector2(-100,-80), new Vector2(.5f,1f));
+        csbutton.Size = new Vector2(200, 80);
+        csbutton.UpElement = button5;
+        csbutton.DownElement = dbgbutton;
+        csbutton.OnPress += rootGoFS;
+        dbgbutton.Size = new Vector2(200, 80);
+        dbgbutton.UpElement = csbutton;
+        dbgbutton.DownElement = button3;
+        dbgbutton.OnPress += rootGoCS;
+        button3.Size = new Vector2(200, 80);
+        button3.UpElement = dbgbutton;
+        button3.DownElement = button4;
+        button4.Size = new Vector2(200, 80);
+        button4.UpElement = button3;
+        button4.DownElement = button5;
+        button5.Size = new Vector2(200, 80);
+        button5.UpElement = button4;
+        button5.DownElement = csbutton;
+        csbutton.BackgroundColor = Color.DarkRed * .4f;
+        dbgbutton.BackgroundColor = Color.OrangeRed * .4f;
+        button3.BackgroundColor = Color.Gold * .4f;
+        button4.BackgroundColor = Color.Green * .4f;
+        button5.BackgroundColor = Color.DarkBlue * .4f;
+        buttonsGrp.AddChild(csbutton);
+        buttonsGrp.AddChild(dbgbutton);
+        buttonsGrp.AddChild(button3);
+        buttonsGrp.AddChild(button4);
+        buttonsGrp.AddChild(button5);
+        root.AddChild(buttonsGrp);
+        root.Select(csbutton);
+        return root;
+    }
+    private static UiRoot loadfilesel()
+    {
+        UiRoot root = new();
+        root.Size = Vector2.Zero;
+        root.SizeOffset = Vector2.One;
+        UiLabel labelTest = new("File Select",new Vector2(-125,-40),new Vector2(0.5f,0.15f));
+        labelTest.BackgroundColor = Color.Black * .4f;
+        labelTest.Size = new Vector2(250,80);
+        root.AddChild(labelTest);
+        UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
+        buttonsGrp.Size = new Vector2(800, 500);
+        UiButton backbtn = new("go back", new Vector2(0,0), new Vector2(0f,0f));
+        UiButton chp1btn = new("slot1", new Vector2(0,-50), new Vector2(0f,.5f));
+        UiButton chp2btn = new("slot2", new Vector2(-17,-50), new Vector2(.16f,.5f));
+        UiButton chp3btn = new("slot3", new Vector2(-33,-50), new Vector2(.33f,.5f));
+        backbtn.Size = new Vector2(200, 80);
+        backbtn.DownElement = chp1btn;
+        backbtn.OnPress += csGoBack;
+        chp1btn.Size = new Vector2(100, 100);
+        chp1btn.UpElement = backbtn;
+        chp1btn.RightElement = chp2btn;
+        chp1btn.LeftElement = chp3btn;
+        chp1btn.OnPress += () => { goFs(1); };
+        chp2btn.Size = new Vector2(100, 100);
+        chp2btn.UpElement = backbtn;
+        chp2btn.RightElement = chp3btn;
+        chp2btn.LeftElement = chp1btn;
+        chp2btn.OnPress += () => { goFs(2); };
+        chp3btn.Size = new Vector2(100, 100);
+        chp3btn.UpElement = backbtn;
+        chp3btn.RightElement = chp1btn;
+        chp3btn.LeftElement = chp2btn;
+        chp3btn.OnPress += () => { goFs(3); };
+        backbtn.BackgroundColor = Color.DarkRed * .5f;
+        chp1btn.BackgroundColor = Color.Black * .5f;
+        chp2btn.BackgroundColor = Color.Black * .5f;
+        chp3btn.BackgroundColor = Color.Black * .5f;
+        buttonsGrp.AddChild(backbtn);
+        buttonsGrp.AddChild(chp1btn);
+        buttonsGrp.AddChild(chp2btn);
+        buttonsGrp.AddChild(chp3btn);
+        root.AddChild(buttonsGrp);
+        root.Select(backbtn);
+        return root;
+    }
+    private static UiRoot loadcs()
+    {
+        UiRoot root = new();
+        root.Size = Vector2.Zero;
+        root.SizeOffset = Vector2.One;
+        UiLabel labelTest = new("Chapter select",new Vector2(-125,-40),new Vector2(0.5f,0.15f));
+        labelTest.BackgroundColor = Color.Black * .4f;
+        labelTest.Size = new Vector2(250,80);
+        root.AddChild(labelTest);
+        UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
+        buttonsGrp.Size = new Vector2(800, 500);
+        UiButton backbtn = new("go back", new Vector2(0,0), new Vector2(0f,0f));
+        UiButton chp1btn = new("ch1", new Vector2(0,-50), new Vector2(0f,.5f));
+        UiButton chp2btn = new("ch2", new Vector2(-17,-50), new Vector2(.16f,.5f));
+        UiButton chp3btn = new("ch3", new Vector2(-33,-50), new Vector2(.33f,.5f));
+        UiButton chp4btn = new("ch4", new Vector2(-50,-50), new Vector2(.5f,.5f));
+        UiButton chp5btn = new("ch5", new Vector2(-67,-50), new Vector2(.67f,.5f));
+        UiButton chp6btn = new("ch6", new Vector2(-83,-50), new Vector2(.83f,.5f));
+        UiButton chp7btn = new("ch7", new Vector2(-100,-50), new Vector2(1f,.5f));
+        backbtn.Size = new Vector2(200, 80);
+        backbtn.DownElement = chp1btn;
+        backbtn.OnPress += csGoBack;
+        chp1btn.Size = new Vector2(100, 100);
+        chp1btn.UpElement = backbtn;
+        chp1btn.RightElement = chp2btn;
+        chp1btn.LeftElement = chp7btn;
+        chp1btn.OnPress += () => { goCh(1); };
+        chp2btn.Size = new Vector2(100, 100);
+        chp2btn.UpElement = backbtn;
+        chp2btn.RightElement = chp3btn;
+        chp2btn.LeftElement = chp1btn;
+        chp2btn.OnPress += () => { goCh(2); };
+        chp3btn.Size = new Vector2(100, 100);
+        chp3btn.UpElement = backbtn;
+        chp3btn.RightElement = chp4btn;
+        chp3btn.LeftElement = chp2btn;
+        chp3btn.OnPress += () => { goCh(3); };
+        chp4btn.Size = new Vector2(100, 100);
+        chp4btn.UpElement = backbtn;
+        chp4btn.RightElement = chp5btn;
+        chp4btn.LeftElement = chp3btn;
+        chp4btn.OnPress += () => { goCh(4); };
+        chp5btn.Size = new Vector2(100, 100);
+        chp5btn.UpElement = backbtn;
+        chp5btn.RightElement = chp6btn;
+        chp5btn.LeftElement = chp4btn;
+        chp5btn.OnPress += () => { goCh(5); };
+        chp6btn.Size = new Vector2(100, 100);
+        chp6btn.UpElement = backbtn;
+        chp6btn.RightElement = chp7btn;
+        chp6btn.LeftElement = chp5btn;
+        chp6btn.OnPress += () => { goCh(6); };
+        chp7btn.Size = new Vector2(100, 100);
+        chp7btn.UpElement = backbtn;
+        chp7btn.RightElement = chp1btn;
+        chp7btn.LeftElement = chp6btn;
+        chp7btn.OnPress += () => { goCh(7); };
+        backbtn.BackgroundColor = Color.DarkRed * .5f;
+        chp1btn.BackgroundColor = Color.Black * .5f;
+        chp2btn.BackgroundColor = Color.Black * .5f;
+        chp3btn.BackgroundColor = Color.Black * .5f;
+        chp4btn.BackgroundColor = Color.Black * .5f;
+        chp5btn.BackgroundColor = Color.Black * .5f;
+        chp6btn.BackgroundColor = Color.Black * .5f;
+        chp7btn.BackgroundColor = Color.Black * .5f;
+        buttonsGrp.AddChild(backbtn);
+        buttonsGrp.AddChild(chp1btn);
+        buttonsGrp.AddChild(chp2btn);
+        buttonsGrp.AddChild(chp3btn);
+        buttonsGrp.AddChild(chp4btn);
+        buttonsGrp.AddChild(chp5btn);
+        buttonsGrp.AddChild(chp6btn);
+        buttonsGrp.AddChild(chp7btn);
+        root.AddChild(buttonsGrp);
+        root.Select(backbtn);
+        return root;
+    }
+
+    private static void csGoBack()
+    {
+        Logger.Info("BOS","goto root");
+        BOSHudRenderer.Instance.Goto("root");
+    }
+    private static void rootGoCS()
+    {
+        Logger.Info("BOS","goto chapselect");
+        BOSHudRenderer.Instance.Goto("chapselect");
+    }
+    private static void rootGoFS()
+    {
+        Logger.Info("BOS","goto fileselect");
+        BOSHudRenderer.Instance.Goto("fileselect");
+    }
+
+    private static void goCh(int ch)
+    {
+        SaveData.InitializeDebugMode();
+        LevelEnter.Go(new Session(AreaData.Get(ch).ToKey()), fromSaveData: false);
+    }
+    private static void goFs(int fs)
+    {
+//        SaveData.Instance.CurrentSession.A = ch;
+        rootGoCS();
+//        LevelEnter.Go(new Session(ch), fromSaveData: true);
+    }
+
+}

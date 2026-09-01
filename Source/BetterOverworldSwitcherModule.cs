@@ -5,14 +5,14 @@ namespace Celeste.Mod.BetterOverworldSwitcher;
 public class BetterOverworldSwitcherModule : EverestModule {
     public static BetterOverworldSwitcherModule Instance { get; private set; }
 
-    public override Type SettingsType => typeof(BetterOverworldSwitcherModuleSettings);
-    public static BetterOverworldSwitcherModuleSettings Settings => (BetterOverworldSwitcherModuleSettings) Instance._Settings;
+    public override Type SettingsType => typeof(BOSSettings);
+    public static BOSSettings Settings => (BOSSettings) Instance._Settings;
 
-    public override Type SessionType => typeof(BetterOverworldSwitcherModuleSession);
-    public static BetterOverworldSwitcherModuleSession Session => (BetterOverworldSwitcherModuleSession) Instance._Session;
+    public override Type SessionType => typeof(BOSSession);
+    public static BOSSession Session => (BOSSession) Instance._Session;
 
-    public override Type SaveDataType => typeof(BetterOverworldSwitcherModuleSaveData);
-    public static BetterOverworldSwitcherModuleSaveData SaveData => (BetterOverworldSwitcherModuleSaveData) Instance._SaveData;
+    public override Type SaveDataType => typeof(BOSSaveData);
+    public static BOSSaveData SaveData => (BOSSaveData) Instance._SaveData;
 
     public BetterOverworldSwitcherModule() {
         Instance = this;
