@@ -29,11 +29,13 @@ public class UiElement : Entity
     public Vector2 SizeOffset = Vector2.Zero;
     
     // if we have no parent default to screen width
-    private Vector2 gameSize => new(Engine.Viewport.Width, Engine.Viewport.Height);
+    private Vector2 gameSize => new(Engine.ViewWidth, Engine.ViewHeight);
+    private Vector2 properSize => new(1920, 1080);
+    public Vector2 ScaleFactor => gameSize/properSize;
     private Vector2 parentSize => Parent?.RealSize ?? gameSize;
     private Vector2 parentPos => Parent?.RealPosition ?? Vector2.Zero;
-    public Vector2 JustifiedPosition => Position + new Vector2(Offset.X * parentSize.X, Offset.Y * parentSize.Y);
-    public Vector2 JustifiedSize => Size + new Vector2(SizeOffset.X * parentSize.X, SizeOffset.Y * parentSize.Y);
+    public Vector2 JustifiedPosition => Position * ScaleFactor + new Vector2(Offset.X * parentSize.X, Offset.Y * parentSize.Y);
+    public Vector2 JustifiedSize => Size * ScaleFactor + new Vector2(SizeOffset.X * parentSize.X, SizeOffset.Y * parentSize.Y);
     public Vector2 RealPosition => JustifiedPosition+parentPos;
     public Vector2 RealSize => JustifiedSize;
     public override void Render()

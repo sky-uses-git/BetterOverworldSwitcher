@@ -30,13 +30,13 @@ public class DbgCamController : Entity
 
         if (MInput.Mouse.CheckRightButton)
         {
-            int gameCenterX = Engine.Graphics.GraphicsDevice.Viewport.Width / 2;
-            int gameCenterY = Engine.Graphics.GraphicsDevice.Viewport.Height / 2;
-            int mousePosX = (int)MInput.Mouse.Position.X;
-            int mousePosY = (int)MInput.Mouse.Position.Y;
-            if (!(oldPos == -Vector2.One || MInput.Mouse.Position == oldPos))
-                dbg_rotCam(mousePosX-gameCenterX,mousePosY-gameCenterY);
-            oldPos = MInput.Mouse.Position;
+            int gameCenterX = Engine.Graphics.GraphicsDevice.Viewport.Width/2;
+            int gameCenterY = Engine.Graphics.GraphicsDevice.Viewport.Height/2;
+            MouseState state = Mouse.GetState();
+            int mouseDeltaX = state.X - gameCenterX;
+            int mouseDeltaY = state.Y - gameCenterY;
+            if (mouseDeltaX != 0 || mouseDeltaY != 0)
+                dbg_rotCam(mouseDeltaX,mouseDeltaY);
             Mouse.SetPosition(gameCenterX,gameCenterY);
         }
         else oldPos = -Vector2.One;

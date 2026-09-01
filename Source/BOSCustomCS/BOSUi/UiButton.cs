@@ -11,6 +11,8 @@ public class UiButton : UiFrame
     public string Value = "Button";
     public Color TextColor = Color.White;
     public Color SelectColor = Color.White;
+    public float FontSize = 24;
+    private float RealFontSize => (FontSize / ActiveFont.FontSize.Size);
 
     public UiEnum.TextAlign TextAlign = UiEnum.TextAlign.Center;
     public UiButton(string text, Vector2 position) : base(position)
@@ -49,9 +51,9 @@ public class UiButton : UiFrame
         base.Render();
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
         Vector2 txoffs = alignoffsets[(int)TextAlign];
-        Vector2 txsize = Draw.DefaultFont.MeasureString(Value);
+        Vector2 txsize = ActiveFont.FontSize.Measure(Value)*ScaleFactor*RealFontSize;
         Vector2 addpos = (RealSize - txsize)*txoffs;
-        Draw.Text(Draw.DefaultFont,Value,RealPosition+addpos,TextColor);
+        ActiveFont.Draw(Value,RealPosition+addpos,Vector2.Zero,ScaleFactor * RealFontSize,TextColor);
         Draw.SpriteBatch.End();
         BackgroundColor = oldbkg;
         TextColor = oldtxt;
