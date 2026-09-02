@@ -10,6 +10,7 @@ public static class UiLoader
 {
     public static UiRoot LoadFromXML(string filename)
     {
+        
         return null;
     }
 
@@ -24,18 +25,16 @@ public static class UiLoader
 
     private static UiRoot loadnotfound(string id)
     {
-        UiRoot root = new();
-        root.Size = Vector2.Zero;
-        root.SizeOffset = Vector2.One;
+        UiRoot root = new("notfound");
+        root.Size = ScaleOffset.FromScale(1,1);
         UiLabel notfoundtx = new("UI of ID "+id+" not found or failed to load", new Vector2(0, -50), new Vector2(0, 0.333f));
         notfoundtx.TextColor = Color.Red;
-        notfoundtx.BackgroundColor = Color.Black;
-        notfoundtx.Size = new Vector2(0,100);
-        notfoundtx.SizeOffset = new Vector2(1f, 0f);
+        notfoundtx.BackgroundColor = Color.Black*.75f;
+        notfoundtx.Size = new ScaleOffset(0,100,1,0);
         UiButton backButton = new("Back to root", new Vector2(-200, -40), new Vector2(0.5f, 0.667f));
         backButton.TextColor = Color.White;
         backButton.BackgroundColor = Color.Black;
-        backButton.Size = new Vector2(400, 80);
+        backButton.Size = ScaleOffset.FromOffset(400, 80);
         backButton.OnPress += () => BOSHudRenderer.Instance.Goto("root");
         root.AddChild(notfoundtx);
         root.AddChild(backButton);
@@ -45,43 +44,42 @@ public static class UiLoader
 
     private static UiRoot loadroot()
     {
-        UiRoot root = new();
-        root.Size = Vector2.Zero;
-        root.SizeOffset = Vector2.One;
+        UiRoot root = new("mainmenu");
+        root.Size = ScaleOffset.FromScale(1,1);
         UiLabel labelTest = new("BetterOverworldSwitcher Host",new Vector2(-200,-40),new Vector2(0.5f,0.15f));
         labelTest.BackgroundColor = Color.Black * .4f;
-        labelTest.Size = new Vector2(400,80);
+        labelTest.Size = ScaleOffset.FromOffset(400,80);
         root.AddChild(labelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
-        buttonsGrp.Size = new Vector2(800, 500);
+        buttonsGrp.Size = ScaleOffset.FromOffset(800, 500);
         UiButton csbutton = new("file select", new Vector2(-100,0), new Vector2(.5f,0f));
         UiButton dbgbutton = new("debug", new Vector2(-100,-20), new Vector2(.5f,.25f));
         UiButton button3 = new("test notfound", new Vector2(-100,-40), new Vector2(.5f,.5f));
         UiButton button4 = new("settings (not work)", new Vector2(-100,-60), new Vector2(.5f,.75f));
         UiButton exitbtn = new("exit game", new Vector2(-100,-80), new Vector2(.5f,1f));
         UiButton vanillabtn = new("back to vanilla", new Vector2(-200,0), new Vector2(1f,.0f));
-        csbutton.Size = new Vector2(200, 80);
+        csbutton.Size = ScaleOffset.FromOffset(200, 80);
         csbutton.UpElement = exitbtn;
         csbutton.DownElement = dbgbutton;
         csbutton.LeftElement = vanillabtn;
         csbutton.RightElement = vanillabtn;
         csbutton.OnPress += rootGoFS;
-        dbgbutton.Size = new Vector2(200, 80);
+        dbgbutton.Size = ScaleOffset.FromOffset(200, 80);
         dbgbutton.UpElement = csbutton;
         dbgbutton.DownElement = button3;
         dbgbutton.OnPress += rootGoCS;
-        button3.Size = new Vector2(200, 80);
+        button3.Size = ScaleOffset.FromOffset(200, 80);
         button3.UpElement = dbgbutton;
         button3.DownElement = button4;
         button3.OnPress += () => BOSHudRenderer.Instance.Goto("asdfhjasfhdjasdhjfjksadfhjjkafhjk");
-        button4.Size = new Vector2(200, 80);
+        button4.Size = ScaleOffset.FromOffset(200, 80);
         button4.UpElement = button3;
         button4.DownElement = exitbtn;
-        exitbtn.Size = new Vector2(200, 80);
+        exitbtn.Size = ScaleOffset.FromOffset(200, 80);
         exitbtn.UpElement = button4;
         exitbtn.DownElement = csbutton;
         exitbtn.OnPress += () => Engine.Instance.Exit();
-        vanillabtn.Size = new Vector2(200, 80);
+        vanillabtn.Size = ScaleOffset.FromOffset(200, 80);
         vanillabtn.LeftElement = csbutton;
         vanillabtn.RightElement = csbutton;
         vanillabtn.DownElement = dbgbutton;
@@ -106,33 +104,32 @@ public static class UiLoader
     }
     private static UiRoot loadfilesel()
     {
-        UiRoot root = new();
-        root.Size = Vector2.Zero;
-        root.SizeOffset = Vector2.One;
+        UiRoot root = new("filesel");
+        root.Size = ScaleOffset.FromScale(1,1);
         UiLabel labelTest = new("File Select",new Vector2(-125,-40),new Vector2(0.5f,0.15f));
         labelTest.BackgroundColor = Color.Black * .4f;
-        labelTest.Size = new Vector2(250,80);
+        labelTest.Size = ScaleOffset.FromOffset(250,80);
         root.AddChild(labelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
-        buttonsGrp.Size = new Vector2(800, 500);
+        buttonsGrp.Size = ScaleOffset.FromOffset(800, 500);
         UiButton backbtn = new("go back", new Vector2(0,0), new Vector2(0f,0f));
         UiButton chp1btn = new("slot1", new Vector2(0,-50), new Vector2(0f,.5f));
         UiButton chp2btn = new("slot2", new Vector2(-17,-50), new Vector2(.16f,.5f));
         UiButton chp3btn = new("slot3", new Vector2(-33,-50), new Vector2(.33f,.5f));
-        backbtn.Size = new Vector2(200, 80);
+        backbtn.Size = ScaleOffset.FromOffset(200, 80);
         backbtn.DownElement = chp1btn;
         backbtn.OnPress += csGoBack;
-        chp1btn.Size = new Vector2(100, 100);
+        chp1btn.Size = ScaleOffset.FromOffset(100, 100);
         chp1btn.UpElement = backbtn;
         chp1btn.RightElement = chp2btn;
         chp1btn.LeftElement = chp3btn;
         chp1btn.OnPress += () => { goFs(1); };
-        chp2btn.Size = new Vector2(100, 100);
+        chp2btn.Size = ScaleOffset.FromOffset(100, 100);
         chp2btn.UpElement = backbtn;
         chp2btn.RightElement = chp3btn;
         chp2btn.LeftElement = chp1btn;
         chp2btn.OnPress += () => { goFs(2); };
-        chp3btn.Size = new Vector2(100, 100);
+        chp3btn.Size = ScaleOffset.FromOffset(100, 100);
         chp3btn.UpElement = backbtn;
         chp3btn.RightElement = chp1btn;
         chp3btn.LeftElement = chp2btn;
@@ -151,15 +148,14 @@ public static class UiLoader
     }
     private static UiRoot loadcs()
     {
-        UiRoot root = new();
-        root.Size = Vector2.Zero;
-        root.SizeOffset = Vector2.One;
+        UiRoot root = new("chaptersel");
+        root.Size = ScaleOffset.FromScale(1,1);
         UiLabel labelTest = new("Chapter select",new Vector2(-125,-40),new Vector2(0.5f,0.15f));
         labelTest.BackgroundColor = Color.Black * .4f;
-        labelTest.Size = new Vector2(250,80);
+        labelTest.Size = ScaleOffset.FromOffset(250,80);
         root.AddChild(labelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
-        buttonsGrp.Size = new Vector2(800, 500);
+        buttonsGrp.Size = ScaleOffset.FromOffset(800, 500);
         UiButton backbtn = new("go back", new Vector2(0,-40), new Vector2(0f,.25f));
         UiButton chp1btn = new("ch1", new Vector2(0,-50), new Vector2(0f,.5f));
         UiButton chp2btn = new("ch2", new Vector2(-17,-50), new Vector2(.16f,.5f));
@@ -170,46 +166,46 @@ public static class UiLoader
         UiButton chp7btn = new("ch7", new Vector2(-100,-50), new Vector2(1f,.5f));
         UiButton chp8btn = new("ch8", new Vector2(0,-50), new Vector2(0f,.75f));
         UiButton chp9btn = new("ch9", new Vector2(-17,-50), new Vector2(.16f,.75f));
-        backbtn.Size = new Vector2(200, 80);
+        backbtn.Size = ScaleOffset.FromOffset(200, 80);
         backbtn.DownElement = chp1btn;
         backbtn.OnPress += csGoBack;
-        chp1btn.Size = new Vector2(100, 100);
+        chp1btn.Size = ScaleOffset.FromOffset(100, 100);
         chp1btn.UpElement = backbtn;
         chp1btn.RightElement = chp2btn;
         chp1btn.LeftElement = chp9btn;
         chp1btn.DownElement = chp8btn;
         chp1btn.OnPress += () => { goCh(1); };
-        chp2btn.Size = new Vector2(100, 100);
+        chp2btn.Size = ScaleOffset.FromOffset(100, 100);
         chp2btn.UpElement = backbtn;
         chp2btn.RightElement = chp3btn;
         chp2btn.LeftElement = chp1btn;
         chp2btn.DownElement = chp9btn;
         chp2btn.OnPress += () => { goCh(2); };
-        chp3btn.Size = new Vector2(100, 100);
+        chp3btn.Size = ScaleOffset.FromOffset(100, 100);
         chp3btn.UpElement = backbtn;
         chp3btn.RightElement = chp4btn;
         chp3btn.LeftElement = chp2btn;
         chp3btn.DownElement = chp9btn;
         chp3btn.OnPress += () => { goCh(3); };
-        chp4btn.Size = new Vector2(100, 100);
+        chp4btn.Size = ScaleOffset.FromOffset(100, 100);
         chp4btn.UpElement = backbtn;
         chp4btn.RightElement = chp5btn;
         chp4btn.LeftElement = chp3btn;
         chp4btn.DownElement = chp9btn;
         chp4btn.OnPress += () => { goCh(4); };
-        chp5btn.Size = new Vector2(100, 100);
+        chp5btn.Size = ScaleOffset.FromOffset(100, 100);
         chp5btn.UpElement = backbtn;
         chp5btn.RightElement = chp6btn;
         chp5btn.LeftElement = chp4btn;
         chp5btn.DownElement = chp9btn;
         chp5btn.OnPress += () => { goCh(5); };
-        chp6btn.Size = new Vector2(100, 100);
+        chp6btn.Size = ScaleOffset.FromOffset(100, 100);
         chp6btn.UpElement = backbtn;
         chp6btn.RightElement = chp7btn;
         chp6btn.LeftElement = chp5btn;
         chp6btn.DownElement = chp9btn;
         chp6btn.OnPress += () => { goCh(6); };
-        chp7btn.Size = new Vector2(100, 100);
+        chp7btn.Size = ScaleOffset.FromOffset(100, 100);
         chp7btn.UpElement = backbtn;
         chp7btn.RightElement = chp8btn;
         chp7btn.LeftElement = chp6btn;

@@ -24,9 +24,11 @@ public class UiElement : Entity
     public UiElement Parent;
     public string id;
     // Position
-    public Vector2 Offset = Vector2.Zero;
-    public Vector2 Size = Vector2.One*100;
-    public Vector2 SizeOffset = Vector2.Zero;
+    public ScaleOffset Position = ScaleOffset.Zero;
+    public ScaleOffset Size = ScaleOffset.FromOffset(100,100);
+    public ScaleOffset TweenFrom = ScaleOffset.Zero;
+    public ScaleOffset TweenTo = ScaleOffset.Zero;
+    private Tween tween;
     
     // if we have no parent default to screen width
     private Vector2 gameSize => new(Engine.ViewWidth, Engine.ViewHeight);
@@ -34,8 +36,8 @@ public class UiElement : Entity
     public Vector2 ScaleFactor => gameSize/properSize;
     private Vector2 parentSize => Parent?.RealSize ?? gameSize;
     private Vector2 parentPos => Parent?.RealPosition ?? Vector2.Zero;
-    public Vector2 JustifiedPosition => Position * ScaleFactor + new Vector2(Offset.X * parentSize.X, Offset.Y * parentSize.Y);
-    public Vector2 JustifiedSize => Size * ScaleFactor + new Vector2(SizeOffset.X * parentSize.X, SizeOffset.Y * parentSize.Y);
+    public Vector2 JustifiedPosition => Position.Offset * ScaleFactor + Position.Scale * parentSize;
+    public Vector2 JustifiedSize => Size.Offset * ScaleFactor + Size.Scale * parentSize;
     public Vector2 RealPosition => JustifiedPosition+parentPos;
     public Vector2 RealSize => JustifiedSize;
     public override void Render()
@@ -59,28 +61,34 @@ public class UiElement : Entity
         }
     }
 
-    public UiElement(Vector2 position) : base(position)
+    public UiElement() : base()
     {
         Children = new List<UiElement>();
         id = GetType().Name;
+        TweenTo = Position;
+        TweenFrom = Position;
         AddTag(Tags.HUD);
     }
     
-    public UiElement(Vector2 position, Vector2 offs) : base(position)
+    public UiElement(Vector2 offset, Vector2 scale) : this()
     {
-        Children = new List<UiElement>();
-        id = GetType().Name;
-        AddTag(Tags.HUD);
-        Offset = offs;
+        Position = new ScaleOffset(offset, scale);
+        TweenTo = Position;
+        TweenFrom = Position;
     }
 
     private void dbg_DrawInfo()
     {
-        Vector2 idsize = Draw.DefaultFont.MeasureString(id);
+        string typename = GetType().Name;
+        float idfontsize = 20f / ActiveFont.FontSize.Size;
+        float typefontsize = 12f / ActiveFont.FontSize.Size;
+        Vector2 idsize = ActiveFont.Measure(id) * idfontsize;
+        Vector2 typesize = ActiveFont.Measure(typename) * typefontsize;
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
-        Draw.Rect(RealPosition,idsize.X,idsize.Y,Color.Red);
+        Draw.Rect(RealPosition,Math.Max(idsize.X,typesize.X),idsize.Y+typesize.Y,Color.Blue);
         Draw.HollowRect(RealPosition,RealSize.X,RealSize.Y,Color.Red);
-        Draw.Text(Draw.DefaultFont,id,RealPosition,Color.LawnGreen);
+        ActiveFont.Draw(id,RealPosition,Vector2.Zero, Vector2.One * idfontsize, Color.White);
+        ActiveFont.Draw(typename,RealPosition+new Vector2(0,idsize.Y),Vector2.Zero, Vector2.One * typefontsize, Color.White);
         Draw.SpriteBatch.End();
     }
     public virtual IEnumerable Select()
@@ -94,9 +102,5 @@ public class UiElement : Entity
         return null;
     }
 
-    public void InvokePressed()
-    {
-        Logger.Info("BOS", OnPress?.GetType().Name);
-        OnPress?.Invoke();
-    }
+    public void InvokePressed() => OnPress?.Invoke();
 }

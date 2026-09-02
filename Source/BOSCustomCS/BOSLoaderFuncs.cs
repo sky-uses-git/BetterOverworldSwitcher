@@ -37,6 +37,7 @@ public class BOSLoaderFuncs
         self.Add(handoverEnt);
         activeThread = Thread.CurrentThread;
         activeThread.Priority = ThreadPriority.Lowest;
+        BOSHooks.InvokeBeforeOverworldLoaded();
         RunThread.Start(LoadThread, "BOS_OVERWORLD_LOADER", highPriority: true);
     }
 
@@ -45,6 +46,7 @@ public class BOSLoaderFuncs
         overworld = new BOSHostScene(refloader);
         overworld.Entities.UpdateLists();
         loaded = true;
+        BOSHooks.InvokeAfterOverworldLoaded();
         activeThread.Priority = ThreadPriority.Normal;
     }
 

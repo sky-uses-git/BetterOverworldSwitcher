@@ -10,12 +10,18 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 public class UiRoot : UiElement
 {
     public UiElement Selected;
-    public UiRoot() : base(Vector2.Zero)
+    public UiRoot(string rootid) : base(Vector2.Zero,Vector2.Zero)
     {
+        id = rootid;
+        Size = ScaleOffset.FromScale(1, 1);
         Visible = false;
         Active = false;
     }
-    
+
+    public UiRoot() : this("unnamed")
+    {
+    }
+
     public void SelectUp()
     {
         if (Selected.UpElement != null) {
@@ -69,23 +75,17 @@ public class UiRoot : UiElement
         return null;
     }
 
-    public virtual IEnumerable Enter()
+    public virtual IEnumerator Enter(UiRoot last)
     {
+        yield return 0f;
         Visible = true;
         Active = true;
-        return null;
     }
 
-    public virtual IEnumerable Leave()
+    public virtual IEnumerator Leave(UiRoot next)
     {
+        yield return 0f;
         Visible = false;
         Active = false;
-        return null;
-    }
-
-    public override void SceneEnd(Scene scene)
-    {
-        Leave();
-        base.SceneEnd(scene);
     }
 }

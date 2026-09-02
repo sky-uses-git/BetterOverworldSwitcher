@@ -1,5 +1,7 @@
 namespace Celeste.Mod.BetterOverworldSwitcher;
 
-public class BOSSettings : EverestModuleSettings {
-    public bool ToggleHost { get; set; }
+public class BOSSettings : EverestModuleSettings
+{
+    [SettingNeedsRelaunch]
+    public bool ToggleHost { get; set; } = false;
 }

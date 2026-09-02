@@ -10,13 +10,13 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 public class UiFrame : UiElement
 {
     public Color BackgroundColor = Color.Transparent;
-    public UiFrame(Vector2 position) : base(position)
+    public UiFrame() : base()
     {
     }
-    public UiFrame(Vector2 position, Vector2 offs) : base(position, offs)
+    public UiFrame(Vector2 offset, Vector2 scale) : base(offset,scale)
     {
     }
-    public UiFrame(Vector2 position, Vector2 offs, Color bgColor) : this(position, offs)
+    public UiFrame(Vector2 offset, Vector2 scale, Color bgColor) : this(offset,scale)
     {
         BackgroundColor = bgColor;
     }

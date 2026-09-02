@@ -11,15 +11,15 @@ public class UiLabel : UiFrame
     public float FontSize = 24;
     private float RealFontSize => (FontSize / ActiveFont.FontSize.Size);
     public UiEnum.TextAlign TextAlign = UiEnum.TextAlign.Center;
-    public UiLabel(string text, Vector2 position) : base(position)
+    public UiLabel(string text) : base()
     {
         Value = text;
     }
-    public UiLabel(string text, Vector2 position, Vector2 offs) : base(position, offs)
+    public UiLabel(string text, Vector2 offset, Vector2 scale) : base(offset,scale)
     {
         Value = text;
     }
-    public UiLabel(string text, Vector2 position, Vector2 offs, Color bgColor) : base(position, offs, bgColor)
+    public UiLabel(string text, Vector2 offset, Vector2 scale, Color bgColor) : base(offset, scale, bgColor)
     {
         Value = text;
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MonoMod.ModInterop;
+using System;
 
 namespace Celeste.Mod.BetterOverworldSwitcher;
 
@@ -14,6 +15,8 @@ public class BetterOverworldSwitcherModule : EverestModule {
     public override Type SaveDataType => typeof(BOSSaveData);
     public static BOSSaveData SaveData => (BOSSaveData) Instance._SaveData;
 
+    public static readonly string BOSAssetPath = "Overworld/BOS/";
+
     public BetterOverworldSwitcherModule() {
         Instance = this;
 #if DEBUG
@@ -25,9 +28,15 @@ public class BetterOverworldSwitcherModule : EverestModule {
 #endif
     }
 
+    private static void LoadBOSContent()
+    {
+        Logger.Info("BOS","Loading content");
+    }
+
     public override void Load()
     {
         Everest.Events.GameLoader.OnLoadThread += BOSHooks.HookToOverworldLoader;
+        BOSHooks.BeforeOverworldLoaded += LoadBOSContent;
     }
 
     public override void Unload() {

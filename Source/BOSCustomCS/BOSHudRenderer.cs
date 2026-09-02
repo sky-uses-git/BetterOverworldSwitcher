@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using AsmResolver.PE.Debug.Builder;
+using Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 using Celeste.Mod.Core;
 using Monocle;
 using Microsoft.Xna.Framework;
@@ -13,81 +14,74 @@ public class BOSHudRenderer : Renderer
     public static BOSHudRenderer Instance;
     private BOSDebug.DbgHudRenderer dbghud;
     private BOSHostScene HostScene => BOSHostScene.Instance;
-    private BOSUi.UiRoot uiroot;
     
-    private string PreviousUi = "root";
-    private string CurrentUi = "root";
-    private string NextUi = "root";
+    private UiRoot PreviousUi;
+    private UiRoot CurrentUi;
+    private UiRoot NextUi;
+
+    private Entity routineEntity;
 
     public BOSHudRenderer(Overworld.StartMode startMode)
     {
         Instance = this;
+        HostScene.Add(routineEntity = new());
         HostScene.Add(dbghud = new BOSDebug.DbgHudRenderer());
+        HostScene.Entities.UpdateLists();
         if (startMode == Overworld.StartMode.MainMenu)
-            uiroot = BOSUi.UiLoader.Load("root");
+            Goto("root");
         else if (startMode == Overworld.StartMode.AreaComplete)
-            uiroot = BOSUi.UiLoader.Load("chapselect");
+            Goto("chapselect");
         else if (startMode == Overworld.StartMode.AreaQuit)
-            uiroot = BOSUi.UiLoader.Load("chapselect");
+            Goto("chapselect");
         else
-            uiroot = BOSUi.UiLoader.Load("root");
-        uiroot.Enter();
+            Goto("root");
     }
 
     public override void Update(Scene scene)
     {
-        if (uiroot == null)
+        if (CurrentUi == null)
         {
             base.Update(scene);
             return;
         }
-        if (Input.MenuUp.Pressed) uiroot.SelectUp();
-        if (Input.MenuLeft.Pressed) uiroot.SelectLeft();
-        if (Input.MenuDown.Pressed) uiroot.SelectDown();
-        if (Input.MenuRight.Pressed) uiroot.SelectRight();
-        if (Input.MenuConfirm.Pressed) uiroot.Press();
-        if (Input.MenuCancel.Pressed) uiroot.Cancel();
-        uiroot.Update();
+        if (Input.MenuUp.Pressed) CurrentUi.SelectUp();
+        if (Input.MenuLeft.Pressed) CurrentUi.SelectLeft();
+        if (Input.MenuDown.Pressed) CurrentUi.SelectDown();
+        if (Input.MenuRight.Pressed) CurrentUi.SelectRight();
+        if (Input.MenuConfirm.Pressed) CurrentUi.Press();
+        if (Input.MenuCancel.Pressed) CurrentUi.Cancel();
+        CurrentUi.Update();
         base.Update(scene);
     }
 
     public override void Render(Scene scene)
     {
-        uiroot?.Render();
+        CurrentUi?.Render();
         base.Render(scene);
     }
-/*
-    public IEnumerable Goto(string id)
+
+    private IEnumerator GotoRoutine(UiRoot newroot)
     {
-        Logger.Info("BOS","goto called "+id);
-        NextUi = id;
-        yield return 0f;
-        BOSUi.UiRoot newroot = BOSUi.UiLoader.Load(id);
-        root.Leave();
-        yield return 0f;
-        root = newroot;
-        PreviousUi = CurrentUi;
+        Logger.Info("BOS","goto called "+newroot.id);
+        NextUi = newroot;
+        if (CurrentUi!=null){
+            PreviousUi = CurrentUi;
+            CurrentUi = null;
+            yield return PreviousUi.Leave(NextUi);
+        }
+        yield return NextUi.Enter(PreviousUi);
         CurrentUi = NextUi;
         NextUi = null;
-        newroot.Enter();
-    }*/
+    }
     public void Goto(string id)
     {
-        Logger.Info("BOS","goto "+id+" called");
-        NextUi = id;
         BOSUi.UiRoot newroot = BOSUi.UiLoader.Load(id);
-        uiroot.Leave();
-        PreviousUi = CurrentUi;
-        CurrentUi = NextUi;
-        NextUi = null;
-        uiroot = newroot;
-        uiroot.Enter();
+        routineEntity.Add(new Coroutine(GotoRoutine(newroot)));
     }
 
     public void End()
     {
-        uiroot.Leave();
-        uiroot = null;
+        CurrentUi = null;
         Instance = null;
     }
 }

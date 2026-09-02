@@ -15,15 +15,15 @@ public class UiButton : UiFrame
     private float RealFontSize => (FontSize / ActiveFont.FontSize.Size);
 
     public UiEnum.TextAlign TextAlign = UiEnum.TextAlign.Center;
-    public UiButton(string text, Vector2 position) : base(position)
+    public UiButton(string text) : base()
     {
         Value = text;
     }
-    public UiButton(string text, Vector2 position, Vector2 offs) : base(position, offs)
+    public UiButton(string text, Vector2 offset, Vector2 scale) : base(offset, scale)
     {
         Value = text;
     }
-    public UiButton(string text, Vector2 position, Vector2 offs, Color bgColor) : base(position, offs, bgColor)
+    public UiButton(string text, Vector2 offset, Vector2 scale, Color bgColor) : base(offset, scale, bgColor)
     {
         Value = text;
         BackgroundColor = bgColor;
