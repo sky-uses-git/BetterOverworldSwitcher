@@ -14,16 +14,20 @@ public class UiElement : Actor, IDisposable
     private BOSHostScene HostScene => BOSHostScene.Instance;
     private bool debugEnabled => HostScene.Debug;
     
+    // for selection
     public event Action OnPress;
-
-    private VirtualRenderTarget elemBuffer;
-    
     public UiElement UpElement;
     public UiElement DownElement;
     public UiElement LeftElement;
     public UiElement RightElement;
     public bool Selected;
+    public bool Focused;
+
+    public UiElement Parent;
     private List<UiElement> Children;
+    public string id;
+    public string uuid { get; private set; }
+
     private int _zindex = 0;
     public int ZIndex
     {
@@ -33,18 +37,8 @@ public class UiElement : Actor, IDisposable
             Parent?.ReorderChildren();
         }
     }
-    public UiElement Parent;
-    public string id;
-    public string uuid { get; private set; }
-    public string longid => id+","+GetType().Name+","+uuid;
-
-    // Position
-    public ScaleOffset Position = ScaleOffset.Zero;
-    public ScaleOffset Size = ScaleOffset.FromOffset(100,100);
-    public ScaleOffset TweenFrom = ScaleOffset.Zero;
-    public ScaleOffset TweenTo = ScaleOffset.Zero;
+    public UiEnum.SortMode SortMode = UiEnum.SortMode.UseZindex;
     private UiEnum.RenderMode _renderMode = UiEnum.RenderMode.All; //TODO: improve clip mode
-
     public UiEnum.RenderMode RenderMode
     {
         get => _renderMode;
@@ -58,9 +52,8 @@ public class UiElement : Actor, IDisposable
         }
     }
 
-    public UiEnum.SortMode SortMode = UiEnum.SortMode.UseZindex;
-
-    private Tween tween;
+    public ScaleOffset Position = ScaleOffset.Zero;
+    public ScaleOffset Size = ScaleOffset.FromOffset(100,100);
     
     // if we have no parent default to screen width
     private Vector2 gameSize => new(Engine.ViewWidth, Engine.ViewHeight);
@@ -71,24 +64,32 @@ public class UiElement : Actor, IDisposable
     private Vector2 parentSize => Parent?.RealSize ?? gameSize;
     public Vector2 JustifiedPosition => Position.Offset * ScaleFactor + Position.Scale * parentSize;
     public Vector2 JustifiedSize => Size.Offset * ScaleFactor + Size.Scale * parentSize;
-
     public Vector2 RealPosition => JustifiedPosition + parentPos;
-    public Vector2 RenderPosition => (RenderMode != UiEnum.RenderMode.All) ? Vector2.Zero : JustifiedPosition+parentRenderPos;
-    
     public Vector2 RealSize => JustifiedSize;
+    public Vector2 RenderPosition => (RenderMode != UiEnum.RenderMode.All) ? Vector2.Zero : JustifiedPosition+parentRenderPos;
     public Vector2 RenderSize => RealSize;
+    
+    private VirtualRenderTarget elemBuffer;
 
     public void BeforeRender()
     {
-        if (RenderMode==UiEnum.RenderMode.ClipOverflow) ClipBeforeRender();
+        if (RenderMode == UiEnum.RenderMode.ClipOverflow) clipBeforeRender();
         Children.ForEach(e => { if (e.Visible) e.BeforeRender(); });
     }
 
     public override void Render()
     {
         if (RenderMode == UiEnum.RenderMode.All) renderAll();
-        else renderElemBuffer();
+        else
+        {
+            renderElemBuffer();
+        }
         if (debugEnabled) dbg_renderAll();
+    }
+    public override void Update()
+    {
+        base.Update(); // update ourselves before children
+        Children.ForEach(e => { if (e.Active) e.Update(); });
     }
 
     private List<UiElement> doSort(List<UiElement> children)
@@ -112,10 +113,6 @@ public class UiElement : Actor, IDisposable
             }
         }
         return children;
-    }
-
-    public virtual void RenderElement()
-    {
     }
 
     private void renderAll()
@@ -142,7 +139,7 @@ public class UiElement : Actor, IDisposable
         }
     }
 
-    public void ClipBeforeRender()
+    private void clipBeforeRender()
     {
         RenderTargetBinding[] oldtargets = Engine.Graphics.GraphicsDevice.GetRenderTargets();
         ResetBuffersIfNeeded();
@@ -161,9 +158,9 @@ public class UiElement : Actor, IDisposable
 
     private void ResetBuffersIfNeeded()
     {
-        if (elemBuffer==null || elemBuffer.IsDisposed || elemBuffer.Width != (int)RealSize.X) {
+        if (elemBuffer==null || elemBuffer.IsDisposed || elemBuffer.Width != (int)RealSize.X || elemBuffer.Height != (int)RealSize.Y) {
             DisposeBuffers();
-            elemBuffer = VirtualContent.CreateRenderTarget("draw-"+longid, (int)RealSize.X, (int)RealSize.Y);
+            elemBuffer = VirtualContent.CreateRenderTarget("draw-"+uuid, (int)RealSize.X, (int)RealSize.Y);
         }
     }
     public void DisposeBuffers()
@@ -172,12 +169,7 @@ public class UiElement : Actor, IDisposable
             elemBuffer.Dispose();
     }
     
-    public override void Update()
-    {
-        base.Update(); // update ourselves before children
-        Children.ForEach(e => { if (e.Active) e.Update(); });
-    }
-
+   
     public void ReorderChildren()
     {
         doSort(Children);
@@ -197,8 +189,6 @@ public class UiElement : Actor, IDisposable
         Children = new List<UiElement>();
         id = GetType().Name;
         uuid = Guid.NewGuid().ToString();
-        TweenTo = Position;
-        TweenFrom = Position;
         AddTag(Tags.HUD);
         if (RenderMode == UiEnum.RenderMode.ClipOverflow) ResetBuffersIfNeeded();
     }
@@ -206,8 +196,6 @@ public class UiElement : Actor, IDisposable
     public UiElement(Vector2 offset, Vector2 scale) : this()
     {
         Position = new ScaleOffset(offset, scale);
-        TweenTo = Position;
-        TweenFrom = Position;
     }
 
     private void dbg_DrawInfo()
@@ -224,6 +212,17 @@ public class UiElement : Actor, IDisposable
         ActiveFont.Draw(typename,RealPosition+new Vector2(0,idsize.Y),Vector2.Zero, Vector2.One * typefontsize, Color.White);
         Draw.SpriteBatch.End();
     }
+
+    public void Dispose()
+    {
+        DisposeBuffers();
+    }
+
+    public void InvokePressed() => OnPress?.Invoke();
+
+    public virtual void RenderElement()
+    {
+    }
     public virtual IEnumerable Select()
     {
         Selected = true;
@@ -234,11 +233,4 @@ public class UiElement : Actor, IDisposable
         Selected = false;
         return null;
     }
-
-    public void Dispose()
-    {
-        DisposeBuffers();
-    }
-
-    public void InvokePressed() => OnPress?.Invoke();
 }
