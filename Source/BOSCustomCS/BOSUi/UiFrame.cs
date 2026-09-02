@@ -20,12 +20,12 @@ public class UiFrame : UiElement
     {
         BackgroundColor = bgColor;
     }
-    public override void Render()
+    public override void RenderElement()
     {
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
         if (BackgroundColor!=Color.Transparent)
-            Draw.Rect(RealPosition,RealSize.X,RealSize.Y,BackgroundColor);
+            Draw.Rect(RenderPosition,RenderSize.X,RenderSize.Y,BackgroundColor);
         Draw.SpriteBatch.End();
-        base.Render();
+        base.RenderElement();
     }
 }

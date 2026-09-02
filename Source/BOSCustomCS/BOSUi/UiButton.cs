@@ -6,27 +6,19 @@ using VirtualButton = On.Monocle.VirtualButton;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 
-public class UiButton : UiFrame
+public class UiButton : UiTextLabel
 {
-    public string Value = "Button";
-    public Color TextColor = Color.White;
     public Color SelectColor = Color.White;
-    public float FontSize = 24;
-    private float RealFontSize => (FontSize / ActiveFont.FontSize.Size);
 
     public UiEnum.TextAlign TextAlign = UiEnum.TextAlign.Center;
-    public UiButton(string text) : base()
+    public UiButton(string text) : base(text)
     {
-        Value = text;
     }
-    public UiButton(string text, Vector2 offset, Vector2 scale) : base(offset, scale)
+    public UiButton(string text, Vector2 offset, Vector2 scale) : base(text, offset, scale)
     {
-        Value = text;
     }
-    public UiButton(string text, Vector2 offset, Vector2 scale, Color bgColor) : base(offset, scale, bgColor)
+    public UiButton(string text, float fontsize, Vector2 offset, Vector2 scale) : base(text, fontsize, offset, scale)
     {
-        Value = text;
-        BackgroundColor = bgColor;
     }
 
     private Vector2[] alignoffsets = new[]
@@ -42,19 +34,13 @@ public class UiButton : UiFrame
         new Vector2(1, 1)
     };
 
-    public override void Render()
+    public override void RenderElement()
     {
         Color oldbkg = BackgroundColor;
         Color oldtxt = TextColor;
         if (Selected) BackgroundColor = SelectColor;
         if (Selected) TextColor = Color.Black;
-        base.Render();
-        Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
-        Vector2 txoffs = alignoffsets[(int)TextAlign];
-        Vector2 txsize = ActiveFont.FontSize.Measure(Value)*ScaleFactor*RealFontSize;
-        Vector2 addpos = (RealSize - txsize)*txoffs;
-        ActiveFont.Draw(Value,RealPosition+addpos,Vector2.Zero,ScaleFactor * RealFontSize,TextColor);
-        Draw.SpriteBatch.End();
+        base.RenderElement();
         BackgroundColor = oldbkg;
         TextColor = oldtxt;
     }

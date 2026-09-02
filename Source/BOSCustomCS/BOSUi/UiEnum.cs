@@ -8,6 +8,11 @@ public class UiEnum
         BackToFront,
         UseZindex,
     }
+    public enum RenderMode
+    {
+        All,
+        ClipOverflow
+    }
 
     public enum TextAlign
     {

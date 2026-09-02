@@ -27,7 +27,7 @@ public static class UiLoader
     {
         UiRoot root = new("notfound");
         root.Size = ScaleOffset.FromScale(1,1);
-        UiLabel notfoundtx = new("UI of ID "+id+" not found or failed to load", new Vector2(0, -50), new Vector2(0, 0.333f));
+        UiTextLabel notfoundtx = new("UI of ID "+id+" not found or failed to load", 72,new Vector2(0, -50), new Vector2(0, 0.333f));
         notfoundtx.TextColor = Color.Red;
         notfoundtx.BackgroundColor = Color.Black*.75f;
         notfoundtx.Size = new ScaleOffset(0,100,1,0);
@@ -46,12 +46,17 @@ public static class UiLoader
     {
         UiRoot root = new("mainmenu");
         root.Size = ScaleOffset.FromScale(1,1);
-        UiLabel labelTest = new("BetterOverworldSwitcher Host",new Vector2(-200,-40),new Vector2(0.5f,0.15f));
-        labelTest.BackgroundColor = Color.Black * .4f;
-        labelTest.Size = ScaleOffset.FromOffset(400,80);
+        UiTextLabel labelTest = new("BetterOverworldSwitcher Host",72,new Vector2(-500,-40),new Vector2(0.5f,0.15f));
+        labelTest.Size = ScaleOffset.FromOffset(1000,80);
         root.AddChild(labelTest);
+        UiTextLabel ovlabelTest = new("overflowtestlabelinelem",72,new Vector2(-200,-40),new Vector2(0.5f,0.25f));
+        ovlabelTest.Size = ScaleOffset.FromOffset(400,80);
+        root.AddChild(ovlabelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
         buttonsGrp.Size = ScaleOffset.FromOffset(800, 500);
+        UiTextLabel ovlabelTest2 = new("overflowtestlabelingrp",72,new Vector2(-200,-40),new Vector2(1f,.5f));
+        ovlabelTest2.Size = ScaleOffset.FromOffset(400,80);
+        buttonsGrp.AddChild(ovlabelTest2);
         UiButton csbutton = new("file select", new Vector2(-100,0), new Vector2(.5f,0f));
         UiButton dbgbutton = new("debug", new Vector2(-100,-20), new Vector2(.5f,.25f));
         UiButton button3 = new("test notfound", new Vector2(-100,-40), new Vector2(.5f,.5f));
@@ -106,8 +111,7 @@ public static class UiLoader
     {
         UiRoot root = new("filesel");
         root.Size = ScaleOffset.FromScale(1,1);
-        UiLabel labelTest = new("File Select",new Vector2(-125,-40),new Vector2(0.5f,0.15f));
-        labelTest.BackgroundColor = Color.Black * .4f;
+        UiTextLabel labelTest = new("File Select",72,new Vector2(-125,-40),new Vector2(0.5f,0.15f));
         labelTest.Size = ScaleOffset.FromOffset(250,80);
         root.AddChild(labelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
@@ -150,8 +154,7 @@ public static class UiLoader
     {
         UiRoot root = new("chaptersel");
         root.Size = ScaleOffset.FromScale(1,1);
-        UiLabel labelTest = new("Chapter select",new Vector2(-125,-40),new Vector2(0.5f,0.15f));
-        labelTest.BackgroundColor = Color.Black * .4f;
+        UiTextLabel labelTest = new("Chapter select",72,new Vector2(-125,-40),new Vector2(0.5f,0.15f));
         labelTest.Size = ScaleOffset.FromOffset(250,80);
         root.AddChild(labelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));

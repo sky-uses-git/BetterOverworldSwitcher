@@ -54,6 +54,12 @@ public class BOSHudRenderer : Renderer
         base.Update(scene);
     }
 
+    public override void BeforeRender(Scene scene)
+    {
+        CurrentUi?.BeforeRender();
+        base.BeforeRender(scene);
+    }
+
     public override void Render(Scene scene)
     {
         CurrentUi?.Render();
