@@ -1,8 +1,4 @@
-﻿using System.Collections;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Monocle;
-using VirtualButton = On.Monocle.VirtualButton;
+﻿using Microsoft.Xna.Framework;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 

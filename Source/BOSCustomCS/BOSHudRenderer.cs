@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections;
-using AsmResolver.PE.Debug.Builder;
-using Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
-using Celeste.Mod.Core;
+﻿using System.Collections;
 using Monocle;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS;
 
@@ -17,9 +11,9 @@ public class BOSHudRenderer : Renderer
 
     public bool Transitioning { get; private set; }
 
-    private UiRoot PreviousUi;
-    private UiRoot CurrentUi;
-    private UiRoot NextUi;
+    private BOSUi.UiRoot PreviousUi;
+    private BOSUi.UiRoot CurrentUi;
+    private BOSUi.UiRoot NextUi;
 
     private Entity routineEntity;
 
@@ -69,7 +63,7 @@ public class BOSHudRenderer : Renderer
         base.Render(scene);
     }
 
-    private IEnumerator GotoRoutine(UiRoot newroot)
+    private IEnumerator GotoRoutine(BOSUi.UiRoot newroot)
     {
         Transitioning = true;
         Logger.Info("BOS","goto called "+newroot.id);

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using On.Monocle;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 
