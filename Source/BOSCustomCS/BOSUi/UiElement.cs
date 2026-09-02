@@ -56,12 +56,13 @@ public class UiElement : Actor, IDisposable
     private Vector2 properSize => new(1920, 1080);
     public float ScaleFactor => Engine.ViewWidth/1920f;
     private Vector2 parentPos => Parent?.RealPosition ?? Vector2.Zero;
+    private Vector2 parentRenderPos => Parent?.RenderPosition ?? Vector2.Zero;
     private Vector2 parentSize => Parent?.RealSize ?? gameSize;
     public Vector2 JustifiedPosition => Position.Offset * ScaleFactor + Position.Scale * parentSize;
     public Vector2 JustifiedSize => Size.Offset * ScaleFactor + Size.Scale * parentSize;
 
     public Vector2 RealPosition => JustifiedPosition + parentPos;
-    public Vector2 RenderPosition => (RenderMode != UiEnum.RenderMode.All) ? Vector2.Zero : RealPosition;
+    public Vector2 RenderPosition => (RenderMode != UiEnum.RenderMode.All) ? Vector2.Zero : JustifiedPosition+parentRenderPos;
     
     public Vector2 RealSize => JustifiedSize;
     public Vector2 RenderSize => RealSize;
@@ -76,19 +77,24 @@ public class UiElement : Actor, IDisposable
     {
         if (RenderMode == UiEnum.RenderMode.All) renderAll();
         else renderElemBuffer();
+        if (debugEnabled) dbg_renderAll();
     }
 
     public virtual void RenderElement()
     {
     }
 
-    private void renderChild(UiElement child) { if (child.Visible) child.Render(); }
     private void renderAll()
     {
-        RenderElement(); // draw behind children
-        Children.ForEach(renderChild);
-        if (debugEnabled) dbg_DrawInfo();
+        RenderElement();
+        Children.ForEach(e => { if (e.Visible) e.Render(); });
     }
+    public void dbg_renderAll()
+    {
+        Children.ForEach(e => { if (e.Visible) e.dbg_renderAll(); });
+        dbg_DrawInfo();
+    }
+    
     private void renderElemBuffer()
     {
         switch (RenderMode) {
@@ -172,10 +178,10 @@ public class UiElement : Actor, IDisposable
         Vector2 idsize = ActiveFont.Measure(id) * idfontsize;
         Vector2 typesize = ActiveFont.Measure(typename) * typefontsize;
         Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.NonPremultiplied);
-        Draw.Rect(RenderPosition,Math.Max(idsize.X,typesize.X),idsize.Y+typesize.Y,Color.Blue);
-        Draw.HollowRect(RenderPosition,RenderSize.X,RenderSize.Y,Color.Red);
-        ActiveFont.Draw(id,RenderPosition,Vector2.Zero, Vector2.One * idfontsize, Color.White);
-        ActiveFont.Draw(typename,RenderPosition+new Vector2(0,idsize.Y),Vector2.Zero, Vector2.One * typefontsize, Color.White);
+        Draw.Rect(RealPosition,Math.Max(idsize.X,typesize.X),idsize.Y+typesize.Y,Color.Blue);
+        Draw.HollowRect(RealPosition,RealSize.X,RealSize.Y,Color.Red);
+        ActiveFont.Draw(id,RealPosition,Vector2.Zero, Vector2.One * idfontsize, Color.White);
+        ActiveFont.Draw(typename,RealPosition+new Vector2(0,idsize.Y),Vector2.Zero, Vector2.One * typefontsize, Color.White);
         Draw.SpriteBatch.End();
     }
     public virtual IEnumerable Select()

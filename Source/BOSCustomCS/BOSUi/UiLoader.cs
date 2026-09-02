@@ -49,8 +49,9 @@ public static class UiLoader
         UiTextLabel labelTest = new("BetterOverworldSwitcher Host",72,new Vector2(-500,-40),new Vector2(0.5f,0.15f));
         labelTest.Size = ScaleOffset.FromOffset(1000,80);
         root.AddChild(labelTest);
-        UiTextLabel ovlabelTest = new("overflowtestlabelinelem",72,new Vector2(-200,-40),new Vector2(0.5f,0.25f));
-        ovlabelTest.Size = ScaleOffset.FromOffset(400,80);
+        UiTextLabel ovlabelTest = new("overflowtestlabelinelem",72,new Vector2(-400,-15),new Vector2(0.5f,0.25f));
+        ovlabelTest.Size = ScaleOffset.FromOffset(800,30);
+        ovlabelTest.RenderMode = UiEnum.RenderMode.ClipOverflow;
         root.AddChild(ovlabelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
         buttonsGrp.Size = ScaleOffset.FromOffset(800, 500);
@@ -63,6 +64,7 @@ public static class UiLoader
         UiButton button4 = new("settings (not work)", new Vector2(-100,-60), new Vector2(.5f,.75f));
         UiButton exitbtn = new("exit game", new Vector2(-100,-80), new Vector2(.5f,1f));
         UiButton vanillabtn = new("back to vanilla", new Vector2(-200,0), new Vector2(1f,.0f));
+        buttonsGrp.RenderMode = UiEnum.RenderMode.ClipOverflow;
         csbutton.Size = ScaleOffset.FromOffset(200, 80);
         csbutton.UpElement = exitbtn;
         csbutton.DownElement = dbgbutton;
