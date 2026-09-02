@@ -4,8 +4,8 @@ public class UiEnum
 {
     public enum SortMode
     {
-        FrontToBack,
-        BackToFront,
+        LastOnTop,
+        FirstOnTop,
         UseZindex,
     }
     public enum RenderMode

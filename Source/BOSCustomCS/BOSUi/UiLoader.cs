@@ -49,6 +49,16 @@ public static class UiLoader
         UiTextLabel labelTest = new("BetterOverworldSwitcher Host",72,new Vector2(-500,-40),new Vector2(0.5f,0.15f));
         labelTest.Size = ScaleOffset.FromOffset(1000,80);
         root.AddChild(labelTest);
+        UiTextLabel zIndexTest1 = new("zback", 24, new Vector2(0, -50), new Vector2(0,.5f));
+        UiTextLabel zIndexTest2 = new("zfront", 24, new Vector2(50, 0), new Vector2(0,.5f));
+        zIndexTest1.BackgroundColor = Color.Red * .5f;
+        zIndexTest2.BackgroundColor = Color.Blue * .5f;
+        zIndexTest1.Size = new ScaleOffset(100, 100,0,0);
+        zIndexTest2.Size = new ScaleOffset(100, 100,0,0);
+        zIndexTest1.ZIndex = 1;
+        zIndexTest2.ZIndex = 2;
+        root.AddChild(zIndexTest1);
+        root.AddChild(zIndexTest2);
         UiTextLabel ovlabelTest = new("overflowtestlabelinelem",72,new Vector2(-400,-15),new Vector2(0.5f,0.25f));
         ovlabelTest.Size = ScaleOffset.FromOffset(800,30);
         ovlabelTest.RenderMode = UiEnum.RenderMode.ClipOverflow;

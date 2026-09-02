@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using AsmResolver.DotNet.Builder;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,7 +24,15 @@ public class UiElement : Actor, IDisposable
     public UiElement RightElement;
     public bool Selected;
     private List<UiElement> Children;
-    public int ZIndex = 0;
+    private int _zindex = 0;
+    public int ZIndex
+    {
+        get => _zindex;
+        set {
+            _zindex = value;
+            Parent?.ReorderChildren();
+        }
+    }
     public UiElement Parent;
     public string id;
     public string uuid { get; private set; }
@@ -48,6 +57,8 @@ public class UiElement : Actor, IDisposable
             _renderMode = value;
         }
     }
+
+    public UiEnum.SortMode SortMode = UiEnum.SortMode.UseZindex;
 
     private Tween tween;
     
@@ -78,6 +89,29 @@ public class UiElement : Actor, IDisposable
         if (RenderMode == UiEnum.RenderMode.All) renderAll();
         else renderElemBuffer();
         if (debugEnabled) dbg_renderAll();
+    }
+
+    private List<UiElement> doSort(List<UiElement> children)
+    {
+        switch (SortMode)
+        {
+            case UiEnum.SortMode.LastOnTop:
+            {
+                children.Sort((x,y) => 1);
+                break;
+            }
+            case UiEnum.SortMode.FirstOnTop:
+            {
+                children.Sort((x,y) => -1);
+                break;
+            }
+            case UiEnum.SortMode.UseZindex:
+            {
+                children.Sort((x,y) => x.ZIndex-y.ZIndex);
+                break;
+            }
+        }
+        return children;
     }
 
     public virtual void RenderElement()
@@ -144,11 +178,17 @@ public class UiElement : Actor, IDisposable
         Children.ForEach(e => { if (e.Active) e.Update(); });
     }
 
+    public void ReorderChildren()
+    {
+        doSort(Children);
+    }
+
     public void AddChild(UiElement ch)
     {
         if (!Children.Exists(e => e==ch )) {
             ch.Parent = this;
             Children.Add(ch);
+            ReorderChildren();
         }
     }
 
