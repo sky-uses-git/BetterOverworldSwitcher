@@ -52,8 +52,22 @@ public class UiElement : Actor, IDisposable
         }
     }
 
-    public ScaleOffset Position = ScaleOffset.Zero;
-    public ScaleOffset Size = ScaleOffset.FromOffset(100,100);
+    private readonly Tweenable<ScaleOffset> _tweenPos;
+    private readonly Tweenable<ScaleOffset> _tweenSize;
+    public Tweenable<ScaleOffset> PositionTween => _tweenPos;
+    public Tweenable<ScaleOffset> SizeTween => _tweenSize;
+
+    public ScaleOffset Position
+    {
+        get => _tweenPos.Value;
+        set => _tweenPos.TweenTo(value);
+    }
+
+    public ScaleOffset Size
+    {
+        get => _tweenSize.Value;
+        set => _tweenSize.TweenTo(value);
+    }
     
     // if we have no parent default to screen width
     private Vector2 gameSize => new(Engine.ViewWidth, Engine.ViewHeight);
@@ -132,7 +146,7 @@ public class UiElement : Actor, IDisposable
             case UiEnum.RenderMode.ClipOverflow:
             {
                 Draw.SpriteBatch.Begin(SpriteSortMode.Deferred,BlendState.AlphaBlend);
-                Draw.SpriteBatch.Draw((RenderTarget2D)elemBuffer,JustifiedPosition,Color.White);
+                Draw.SpriteBatch.Draw((RenderTarget2D)elemBuffer,RealPosition,Color.White);
                 Draw.SpriteBatch.End();
                 break;
             }
@@ -186,6 +200,10 @@ public class UiElement : Actor, IDisposable
 
     public UiElement() : base(Vector2.Zero)
     {
+        _tweenPos = new(ScaleOffset.Zero,0f,ScaleOffset.Lerp);
+        _tweenSize = new(ScaleOffset.FromOffset(100,100),0f,ScaleOffset.Lerp);
+        Add(_tweenPos.Tween);
+        Add(_tweenSize.Tween);
         Children = new List<UiElement>();
         id = GetType().Name;
         uuid = Guid.NewGuid().ToString();

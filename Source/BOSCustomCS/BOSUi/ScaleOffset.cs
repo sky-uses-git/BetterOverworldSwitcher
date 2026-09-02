@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using On.Monocle;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 
@@ -21,4 +22,7 @@ public class ScaleOffset
     public static ScaleOffset FromScale(float sx, float sy) => new(0,0,sx, sy);
 
     public static ScaleOffset Zero => new(0, 0, 0, 0);
+
+    public static ScaleOffset Lerp(ScaleOffset from, ScaleOffset to, float ease) =>
+        new(Vector2.Lerp(from.Offset, to.Offset, ease), Vector2.Lerp(from.Scale, to.Scale, ease));
 }

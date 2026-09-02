@@ -77,14 +77,18 @@ public class UiRoot : UiElement
 
     public virtual IEnumerator Enter(UiRoot last)
     {
-        yield return 0f;
+        Position = new ScaleOffset(0, 0, 0, 1);
+        PositionTween.Duration = .2f;
+        Position = new ScaleOffset(0, 0, 0, 0);
+        yield return .2f;
         Visible = true;
         Active = true;
     }
 
     public virtual IEnumerator Leave(UiRoot next)
     {
-        yield return 0f;
+        Position = new ScaleOffset(0, 0, 0, 1);
+        yield return .2f;
         Visible = false;
         Active = false;
     }

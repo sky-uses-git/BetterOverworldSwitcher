@@ -14,7 +14,9 @@ public class BOSHudRenderer : Renderer
     public static BOSHudRenderer Instance;
     private BOSDebug.DbgHudRenderer dbghud;
     private BOSHostScene HostScene => BOSHostScene.Instance;
-    
+
+    public bool Transitioning { get; private set; }
+
     private UiRoot PreviousUi;
     private UiRoot CurrentUi;
     private UiRoot NextUi;
@@ -39,8 +41,9 @@ public class BOSHudRenderer : Renderer
 
     public override void Update(Scene scene)
     {
-        if (CurrentUi == null)
+        if (CurrentUi == null || Transitioning)
         {
+            CurrentUi?.Update();
             base.Update(scene);
             return;
         }
@@ -68,16 +71,18 @@ public class BOSHudRenderer : Renderer
 
     private IEnumerator GotoRoutine(UiRoot newroot)
     {
+        Transitioning = true;
         Logger.Info("BOS","goto called "+newroot.id);
         NextUi = newroot;
         if (CurrentUi!=null){
+            yield return CurrentUi.Leave(NextUi);
             PreviousUi = CurrentUi;
             CurrentUi = null;
-            yield return PreviousUi.Leave(NextUi);
         }
         yield return NextUi.Enter(PreviousUi);
         CurrentUi = NextUi;
         NextUi = null;
+        Transitioning = false;
     }
     public void Goto(string id)
     {
