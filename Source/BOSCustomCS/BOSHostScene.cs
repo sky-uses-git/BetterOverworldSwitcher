@@ -17,6 +17,7 @@ public class BOSHostScene : Scene
     public static BOSHostScene Instance { get; private set; }
 
     public BOSRenderer Renderer;
+    public BOSCamController CamController;
     public BOSHudRenderer Hud;
     public HiresSnow Snow;
     
@@ -31,9 +32,10 @@ public class BOSHostScene : Scene
     public BOSHostScene(OverworldLoader loader)
     {
         Instance = this;
-        Add(Renderer = new BOSRenderer());
-        Add(Snow = loader.Snow ?? new HiresSnow());
-        Add(Hud = new BOSHudRenderer(loader.StartMode));
+        Add(Renderer = new());
+        Add(Snow = loader.Snow ?? new());
+        Add(Hud = new(loader.StartMode));
+        Add(CamController = new(Renderer.Viewer));
         RendererList.UpdateLists();
     }
 
