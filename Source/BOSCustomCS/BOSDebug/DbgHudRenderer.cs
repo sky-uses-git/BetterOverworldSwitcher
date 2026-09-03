@@ -11,6 +11,7 @@ public class DbgHudRenderer : Renderer
     private bool debugEnabled => HostScene.Debug;
     
     private DbgCamController camController;
+    private BOSCamController HostCamController => HostScene.CamController;
 
     public DbgHudRenderer()
     {

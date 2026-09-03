@@ -16,12 +16,13 @@ public class BOSHostScene : Scene
 {
     public static BOSHostScene Instance { get; private set; }
 
-    public BOSRenderer Renderer;
-    public BOSCamController CamController;
-    public BOSHudRenderer Hud;
-    public HiresSnow Snow;
+    public BOSRenderer Renderer { get; private set; }
+    public BOSCamController CamController { get; private set; }
+    public BOSHudRenderer Hud { get; private set; }
+    public HiresSnow Snow { get; private set; }
+    public Snow3D Snow3D { get; private set; }
     
-    public bool Debug = false;
+    public bool Debug { get; private set; } = false;
     
     public override void Update()
     {
@@ -34,6 +35,7 @@ public class BOSHostScene : Scene
         Instance = this;
         Add(Renderer = new());
         Add(Hud = new(loader.StartMode));
+        Add(Snow3D = new Snow3D(Renderer.Viewer));
         Add(Snow = loader.Snow ?? new());
         Add(CamController = new(Renderer.Viewer));
         RendererList.UpdateLists();

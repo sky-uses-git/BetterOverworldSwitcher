@@ -4,8 +4,9 @@ public class BOSEnum
 {
     public enum CameraMode
     {
+        FreePos,
+        xx,
         CircleAroundPos,
         JumpAroundPos,
-        FreePos
     }
 }
