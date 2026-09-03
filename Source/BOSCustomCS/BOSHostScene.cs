@@ -33,8 +33,8 @@ public class BOSHostScene : Scene
     {
         Instance = this;
         Add(Renderer = new());
-        Add(Snow = loader.Snow ?? new());
         Add(Hud = new(loader.StartMode));
+        Add(Snow = loader.Snow ?? new());
         Add(CamController = new(Renderer.Viewer));
         RendererList.UpdateLists();
     }

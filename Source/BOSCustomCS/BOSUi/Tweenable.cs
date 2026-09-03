@@ -6,6 +6,7 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 public class Tweenable<T>
 {
     public T Value { get; private set; }
+    public T Target => to;
     private T from;
     private T to;
     public bool Active { get; private set; }
@@ -32,7 +33,6 @@ public class Tweenable<T>
     }
     public void TweenTo(T target,float duration,bool completeTween)
     {
-        Logger.Info("BOS tween","tweento called");
         from = completeTween ? to : Value;
         to = target;
         tween.Duration = duration;

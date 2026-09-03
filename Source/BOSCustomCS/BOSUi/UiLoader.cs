@@ -30,14 +30,14 @@ public static class UiLoader
         notfoundtx.TextColor = Color.Red;
         notfoundtx.BackgroundColor = Color.Black*.75f;
         notfoundtx.Size = new ScaleOffset(0,100,1,0);
-        UiButton backButton = new("Back to root", new Vector2(-200, -40), new Vector2(0.5f, 0.667f));
+        UiFancyButton backButton = new("Back to root", new Vector2(-200, -40), new Vector2(0.5f, 0.667f));
         backButton.TextColor = Color.White;
         backButton.BackgroundColor = Color.Black;
         backButton.Size = ScaleOffset.FromOffset(400, 80);
         backButton.OnPress += () => BOSHudRenderer.Instance.Goto("root");
         root.AddChild(notfoundtx);
         root.AddChild(backButton);
-        root.Select(backButton);
+        root.SelectFirst = backButton;
         return root;
     }
 
@@ -48,31 +48,14 @@ public static class UiLoader
         UiTextLabel labelTest = new("BetterOverworldSwitcher Host",72,new Vector2(-500,-40),new Vector2(0.5f,0.15f));
         labelTest.Size = ScaleOffset.FromOffset(1000,80);
         root.AddChild(labelTest);
-        UiTextLabel zIndexTest1 = new("zback", 24, new Vector2(0, -50), new Vector2(0,.5f));
-        UiTextLabel zIndexTest2 = new("zfront", 24, new Vector2(50, 0), new Vector2(0,.5f));
-        zIndexTest1.BackgroundColor = Color.Red * .5f;
-        zIndexTest2.BackgroundColor = Color.Blue * .5f;
-        zIndexTest1.Size = new ScaleOffset(100, 100,0,0);
-        zIndexTest2.Size = new ScaleOffset(100, 100,0,0);
-        zIndexTest1.ZIndex = 1;
-        zIndexTest2.ZIndex = 2;
-        root.AddChild(zIndexTest1);
-        root.AddChild(zIndexTest2);
-        UiTextLabel ovlabelTest = new("overflowtestlabelinelem",72,new Vector2(-400,-15),new Vector2(0.5f,0.25f));
-        ovlabelTest.Size = ScaleOffset.FromOffset(800,30);
-        ovlabelTest.RenderMode = UiEnum.RenderMode.ClipOverflow;
-        root.AddChild(ovlabelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
         buttonsGrp.Size = ScaleOffset.FromOffset(800, 500);
-        UiTextLabel ovlabelTest2 = new("overflowtestlabelingrp",72,new Vector2(-200,-40),new Vector2(1f,.5f));
-        ovlabelTest2.Size = ScaleOffset.FromOffset(400,80);
-        buttonsGrp.AddChild(ovlabelTest2);
-        UiButton csbutton = new("file select", new Vector2(-100,0), new Vector2(.5f,0f));
-        UiButton dbgbutton = new("debug", new Vector2(-100,-20), new Vector2(.5f,.25f));
-        UiButton button3 = new("test notfound", new Vector2(-100,-40), new Vector2(.5f,.5f));
-        UiButton button4 = new("settings (not work)", new Vector2(-100,-60), new Vector2(.5f,.75f));
-        UiButton exitbtn = new("exit game", new Vector2(-100,-80), new Vector2(.5f,1f));
-        UiButton vanillabtn = new("back to vanilla", new Vector2(-200,0), new Vector2(1f,.0f));
+        UiFancyButton csbutton = new("file select", new Vector2(-100,0), new Vector2(.5f,0f));
+        UiFancyButton dbgbutton = new("debug", new Vector2(-100,-20), new Vector2(.5f,.25f));
+        UiFancyButton button3 = new("test notfound", new Vector2(-100,-40), new Vector2(.5f,.5f));
+        UiFancyButton button4 = new("settings (not work)", new Vector2(-100,-60), new Vector2(.5f,.75f));
+        UiFancyButton exitbtn = new("exit game", new Vector2(-100,-80), new Vector2(.5f,1f));
+        UiFancyButton vanillabtn = new("back to vanilla", new Vector2(-200,0), new Vector2(1f,.0f));
         buttonsGrp.RenderMode = UiEnum.RenderMode.ClipOverflow;
         csbutton.Size = ScaleOffset.FromOffset(200, 80);
         csbutton.UpElement = exitbtn;
@@ -115,7 +98,7 @@ public static class UiLoader
         buttonsGrp.AddChild(exitbtn);
         buttonsGrp.AddChild(vanillabtn);
         root.AddChild(buttonsGrp);
-        root.Select(csbutton);
+        root.SelectFirst = csbutton;
         return root;
     }
     private static UiRoot loadfilesel()
@@ -127,10 +110,10 @@ public static class UiLoader
         root.AddChild(labelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
         buttonsGrp.Size = ScaleOffset.FromOffset(800, 500);
-        UiButton backbtn = new("go back", new Vector2(0,0), new Vector2(0f,0f));
-        UiButton chp1btn = new("slot1", new Vector2(0,-50), new Vector2(0f,.5f));
-        UiButton chp2btn = new("slot2", new Vector2(-17,-50), new Vector2(.16f,.5f));
-        UiButton chp3btn = new("slot3", new Vector2(-33,-50), new Vector2(.33f,.5f));
+        UiFancyButton backbtn = new("go back", new Vector2(0,0), new Vector2(0f,0f));
+        UiFancyButton chp1btn = new("slot1", new Vector2(0,-50), new Vector2(0f,.5f));
+        UiFancyButton chp2btn = new("slot2", new Vector2(-17,-50), new Vector2(.16f,.5f));
+        UiFancyButton chp3btn = new("slot3", new Vector2(-33,-50), new Vector2(.33f,.5f));
         backbtn.Size = ScaleOffset.FromOffset(200, 80);
         backbtn.DownElement = chp1btn;
         backbtn.OnPress += csGoBack;
@@ -158,7 +141,7 @@ public static class UiLoader
         buttonsGrp.AddChild(chp2btn);
         buttonsGrp.AddChild(chp3btn);
         root.AddChild(buttonsGrp);
-        root.Select(backbtn);
+        root.SelectFirst = backbtn;
         return root;
     }
     private static UiRoot loadcs()
@@ -170,16 +153,16 @@ public static class UiLoader
         root.AddChild(labelTest);
         UiFrame buttonsGrp = new(new Vector2(-400,-250), new Vector2(.5f, .575f));
         buttonsGrp.Size = ScaleOffset.FromOffset(800, 500);
-        UiButton backbtn = new("go back", new Vector2(0,-40), new Vector2(0f,.25f));
-        UiButton chp1btn = new("ch1", new Vector2(0,-50), new Vector2(0f,.5f));
-        UiButton chp2btn = new("ch2", new Vector2(-17,-50), new Vector2(.16f,.5f));
-        UiButton chp3btn = new("ch3", new Vector2(-33,-50), new Vector2(.33f,.5f));
-        UiButton chp4btn = new("ch4", new Vector2(-50,-50), new Vector2(.5f,.5f));
-        UiButton chp5btn = new("ch5", new Vector2(-67,-50), new Vector2(.67f,.5f));
-        UiButton chp6btn = new("ch6", new Vector2(-83,-50), new Vector2(.83f,.5f));
-        UiButton chp7btn = new("ch7", new Vector2(-100,-50), new Vector2(1f,.5f));
-        UiButton chp8btn = new("ch8", new Vector2(0,-50), new Vector2(0f,.75f));
-        UiButton chp9btn = new("ch9", new Vector2(-17,-50), new Vector2(.16f,.75f));
+        UiFancyButton backbtn = new("go back", new Vector2(0,-40), new Vector2(0f,.25f));
+        UiFancyButton chp1btn = new("ch1", new Vector2(0,-50), new Vector2(0f,.5f));
+        UiFancyButton chp2btn = new("ch2", new Vector2(-17,-50), new Vector2(.16f,.5f));
+        UiFancyButton chp3btn = new("ch3", new Vector2(-33,-50), new Vector2(.33f,.5f));
+        UiFancyButton chp4btn = new("ch4", new Vector2(-50,-50), new Vector2(.5f,.5f));
+        UiFancyButton chp5btn = new("ch5", new Vector2(-67,-50), new Vector2(.67f,.5f));
+        UiFancyButton chp6btn = new("ch6", new Vector2(-83,-50), new Vector2(.83f,.5f));
+        UiFancyButton chp7btn = new("ch7", new Vector2(-100,-50), new Vector2(1f,.5f));
+        UiFancyButton chp8btn = new("ch8", new Vector2(0,-50), new Vector2(0f,.75f));
+        UiFancyButton chp9btn = new("ch9", new Vector2(-17,-50), new Vector2(.16f,.75f));
         backbtn.Size = ScaleOffset.FromOffset(200, 80);
         backbtn.DownElement = chp1btn;
         backbtn.OnPress += csGoBack;
@@ -256,7 +239,7 @@ public static class UiLoader
         buttonsGrp.AddChild(chp8btn);
         buttonsGrp.AddChild(chp9btn);
         root.AddChild(buttonsGrp);
-        root.Select(backbtn);
+        root.SelectFirst = backbtn;
         return root;
     }
 

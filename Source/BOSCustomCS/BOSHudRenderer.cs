@@ -69,14 +69,18 @@ public class BOSHudRenderer : Renderer
         Logger.Info("BOS","goto called "+newroot.id);
         NextUi = newroot;
         if (CurrentUi!=null){
+            CurrentUi.DeselectElem();
             yield return CurrentUi.Leave(NextUi);
             PreviousUi = CurrentUi;
             CurrentUi = null;
+            PreviousUi.RemoveSelf();
         }
+        HostScene.Add(NextUi);
         yield return NextUi.Enter(PreviousUi);
         CurrentUi = NextUi;
         NextUi = null;
         Transitioning = false;
+        CurrentUi.SelectElem(CurrentUi.SelectFirst);
     }
     public void Goto(string id)
     {

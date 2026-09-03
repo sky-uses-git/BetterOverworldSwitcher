@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Microsoft.Xna.Framework;
+using Monocle;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 
@@ -7,8 +8,11 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 public class UiRoot : UiElement
 {
     public UiElement Selected;
+    public UiElement SelectFirst;
+    public Entity routEnt;
     public UiRoot(string rootid) : base(Vector2.Zero,Vector2.Zero)
     {
+        routEnt = new();
         id = rootid;
         Size = ScaleOffset.FromScale(1, 1);
         Visible = false;
@@ -19,47 +23,58 @@ public class UiRoot : UiElement
     {
     }
 
+    public override void Added(Scene scene)
+    {
+        scene.Add(routEnt);
+        base.Added(scene);
+    }
+
+    public override void Removed(Scene scene)
+    {
+        routEnt.RemoveSelf();
+        base.Removed(scene);
+    }
+
     public void SelectUp()
     {
-        if (Selected.UpElement != null) {
-            Selected.Deselect();
-            Selected = Selected.UpElement;
-            Selected.Select();
-        }
+        if (Selected.UpElement != null)
+            SelectElem(Selected.UpElement);
     }
     public void SelectLeft()
     {
-        if (Selected.LeftElement != null) {
-            Selected.Deselect();
-            Selected = Selected.LeftElement;
-            Selected.Select();
-        }
+        if (Selected.LeftElement != null)
+            SelectElem(Selected.LeftElement);
     }
     public void SelectDown()
     {
-        if (Selected.DownElement != null) {
-            Selected.Deselect();
-            Selected = Selected.DownElement;
-            Selected.Select();
-        }
+        if (Selected.DownElement != null)
+            SelectElem(Selected.DownElement);
     }
     public void SelectRight()
     {
-        if (Selected.RightElement != null) {
-            Selected.Deselect();
-            Selected = Selected.RightElement;
-            Selected.Select();
-        }
+        if (Selected.RightElement != null)
+            SelectElem(Selected.RightElement);
     }
     
-    public void Select(UiElement elem)
+    public void SelectElem(UiElement elem)
+    {
+        UiElement lastElem = Selected;
+        if (lastElem != null) {
+            lastElem.Selected = false;
+            routEnt.Add(new Coroutine(lastElem.Deselect(elem)));
+        }
+        Selected = elem;
+        Selected.Selected = true;
+        routEnt.Add(new Coroutine(Selected.Select(lastElem)));
+    }
+
+    public void DeselectElem()
     {
         if (Selected != null)
-            Selected.Deselect();
-        Selected = elem;
-        Selected.Select();
+            routEnt.Add(new Coroutine(Selected.Deselect(null)));
+        Selected = null;
     }
-    
+
     public void Press()
     {
         if (Selected != null) {
@@ -75,7 +90,7 @@ public class UiRoot : UiElement
     public virtual IEnumerator Enter(UiRoot last)
     {
         Position = new ScaleOffset(0, 0, 0, 1);
-        PositionTween.Duration = .2f;
+        PositionTween.Duration = .4f;
         Position = new ScaleOffset(0, 0, 0, 0);
         yield return .2f;
         Visible = true;
@@ -88,5 +103,6 @@ public class UiRoot : UiElement
         yield return .2f;
         Visible = false;
         Active = false;
+        routEnt.RemoveSelf();
     }
 }

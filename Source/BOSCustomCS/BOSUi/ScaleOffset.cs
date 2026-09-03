@@ -24,4 +24,6 @@ public class ScaleOffset
 
     public static ScaleOffset Lerp(ScaleOffset from, ScaleOffset to, float ease) =>
         new(Vector2.Lerp(from.Offset, to.Offset, ease), Vector2.Lerp(from.Scale, to.Scale, ease));
+
+    public static ScaleOffset operator +(ScaleOffset x, ScaleOffset y) => new ScaleOffset(x.Offset + y.Offset, x.Scale + y.Scale);
 }

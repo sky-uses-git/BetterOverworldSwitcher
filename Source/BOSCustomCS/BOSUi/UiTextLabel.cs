@@ -15,7 +15,7 @@ public class UiTextLabel : UiFrame
     public float FontSize = 24;
     private Vector2 RealFontSize => Vector2.One * (FontSize / ActiveFont.FontSize.Size) * ScaleFactor;
     public UiEnum.TextAlign TextAlign = UiEnum.TextAlign.Center;
-    public UiTextLabel(string text) : base()
+    public UiTextLabel(string text)
     {
         Value = text;
     }

@@ -239,14 +239,12 @@ public class UiElement : Actor, IDisposable
     public virtual void RenderElement()
     {
     }
-    public virtual IEnumerable Select()
+    public virtual IEnumerator Select(UiElement last)
     {
-        Selected = true;
-        return null;
+        yield return null;
     }
-    public virtual IEnumerable Deselect()
+    public virtual IEnumerator Deselect(UiElement next)
     {
-        Selected = false;
-        return null;
+        yield return null;
     }
 }
