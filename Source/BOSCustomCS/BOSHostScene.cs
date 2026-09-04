@@ -19,7 +19,6 @@ public class BOSHostScene : Scene
     public static BOSHostScene Instance { get; private set; }
 
     public Scene3D Viewer { get; private set; }
-    public EngineEntity EngineEntity { get; private set; }
     public BOSCamController CamController { get; private set; }
     public BOSHudRenderer Hud { get; private set; }
     public HiresSnow Snow { get; private set; }
@@ -42,11 +41,11 @@ public class BOSHostScene : Scene
         e.Values["fontsPath"] = "Graphics/3DEngine/DefaultFonts";
         e.Values["audioPath"] = "Graphics/3DEngine/DefaultAudio";
         e.Values["persistent"] = true;
+        Add(new EngineEntity(e, Vector2.Zero));
         EngineEntity.OnEngineLoad += LoadMtnScene3D;
-        Add(EngineEntity = new EngineEntity(e, Vector2.Zero));
         Add(Hud = new(loader.StartMode));
         Add(Snow = loader.Snow ?? new());
-        Add(CamController = new(Viewer));
+        Add(CamController = new());
         RendererList.UpdateLists();
         Entities.UpdateLists();
     }
@@ -73,7 +72,6 @@ public class BOSHostScene : Scene
 
     public override void End()
     {
-        Remove(EngineEntity);
         Hud.End();
         Instance = null;
         base.End();

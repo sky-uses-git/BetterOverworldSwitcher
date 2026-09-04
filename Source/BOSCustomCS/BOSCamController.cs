@@ -124,7 +124,7 @@ public class BOSCamController : Entity
         base.Update();
     }
 
-    public BOSCamController(Scene3D Viewer)
+    public BOSCamController()
     {
         _tweenTarget = new Tweenable<Vector3>(Vector3.Zero, 1f, Vector3.Lerp);
         _tweencircleMag = new Tweenable<float>(0f, 1f, float.Lerp);
@@ -138,9 +138,14 @@ public class BOSCamController : Entity
         Add(_tweencircleMag.Tween);
         Add(_tweencircleRot.Tween);
         Add(_tweencircleVdsp.Tween);
-        ViewerTarget = Viewer;
+    }
+
+    public override void Added(Scene scene)
+    {
+        ViewerTarget = EngineEntity.GetCurrentScene();
         Camera = ViewerTarget.GetRenderingCamera();
         Circle(new Vector3(0,4.3f,1.125f),18,6,-62.5f);
         _tweenTarget.CompleteTweenOnUpdate = false;
+        base.Added(scene);
     }
 }
