@@ -1,7 +1,10 @@
-﻿using System.Xml;
+﻿using System.Collections.Generic;
+using System.Numerics;
+using System.Xml;
 using Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi.UiXml;
 using Microsoft.Xna.Framework;
 using Monocle;
+using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 
@@ -10,16 +13,86 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 public static class UiLoader
 {
     private static XmlLoader xmlLoader = new();
-    public static UiRoot LoadFromXML(string filename)
+
+    private static ScaleOffset[] GetTransform(XmlElement elem)
+    {
+        string s_offsposx = elem.GetAttribute("offsposx");
+        string s_offsposy = elem.GetAttribute("offsposy");
+        string s_sclposx = elem.GetAttribute("sclposx");
+        string s_sclposy = elem.GetAttribute("sclposy");
+        string s_offssizx = elem.GetAttribute("offssizx");
+        string s_offssizy = elem.GetAttribute("offssizy");
+        string s_sclsizx = elem.GetAttribute("sclsizx");
+        string s_sclsizy = elem.GetAttribute("sclsizy");
+        int offsposx=0;
+        int offsposy=0;
+        float sclposx=0;
+        float sclposy=0;
+        int offssizx=0;
+        int offssizy=0;
+        float sclsizx=0;
+        float sclsizy=0;
+        if ((s_offsposx.Equals("") || int.TryParse(s_offsposx, out offsposx)) &&
+            (s_offsposy.Equals("") || int.TryParse(s_offsposy, out offsposy)) &&
+            (s_sclposx.Equals("") || float.TryParse(s_sclposx, out sclposx)) &&
+            (s_sclposy.Equals("") || float.TryParse(s_sclposy, out sclposy)) &&
+            (s_offssizx.Equals("") || int.TryParse(s_offssizx, out offssizx)) &&
+            (s_offssizy.Equals("") || int.TryParse(s_offssizy, out offssizy)) &&
+            (s_sclsizx.Equals("") || float.TryParse(s_sclsizx, out sclsizx)) &&
+            (s_sclsizy.Equals("") || float.TryParse(s_sclsizy, out sclsizy)))
+            return [new ScaleOffset(offsposx, offsposy, sclposx, sclposy), new ScaleOffset(offssizx, offssizy, sclsizx, sclsizy)];
+        return null;
+    }
+
+    public static UiElement ConstructUIFromXml(XmlElement ui)
+    {
+        List<UiElement> Children = new();
+        foreach (XmlNode uiChildNode in ui.ChildNodes)
+            if (uiChildNode.GetType().IsAssignableTo(typeof(XmlElement)))
+                Children.Add(ConstructUIFromXml((XmlElement)uiChildNode));
+
+        UiElement me;
+        switch (ui.LocalName)
+        {
+            case "Root": {
+                me = new UiRoot();
+                me.Size = ScaleOffset.FromScale(1, 1);
+                break;
+            }
+            case "Frame": {
+                ScaleOffset[] transform = GetTransform(ui);
+                me = new UiFrame(transform[0].Offset,transform[0].Scale);
+                me.Size = transform[1];
+                break;
+            }
+            case "TextLabel": {
+                ScaleOffset[] transform = GetTransform(ui);
+                me = new UiTextLabel(ui.Value ?? "No value",transform[0].Offset,transform[0].Scale);
+                me.Size = transform[1];
+                break;
+            }
+            default: {
+                ScaleOffset[] transform = GetTransform(ui);
+                me = new UiTextLabel("unknown elem",12,Vector2.Zero,Vector2.One*.5f);
+                me.Position = transform[0];
+                me.Size = transform[1];
+                break;
+            }
+        }
+        Children.ForEach(e=>me.AddChild(e));
+        return me;
+    }
+
+    public static UiElement LoadFromXML(string filename) // TODO: add lua support for xml buttons? ?
     {
         XmlElement ui = xmlLoader.Load(filename);
-        //Logger.Info("BOS UiLoader",ui.LocalName);
-        return null;
+        if (ui == null) return loadnotfound(filename);
+        return ConstructUIFromXml(ui);
     }
 
     public static UiRoot Load(string id)
     {
-        LoadFromXML("Graphics/Atlases/Mountain/SkyIsYou/BetterOverworldSwitcher/Ui/" + id);
+        return (UiRoot)LoadFromXML("Graphics/Atlases/Mountain/SkyIsYou/BetterOverworldSwitcher/Ui/" + id);
         Logger.Info("BOS","load ui "+id+" called");
         if (id.Equals("root")) return loadroot();
         if (id.Equals("fileselect")) return loadfilesel();

@@ -1,6 +1,6 @@
 <Root id="Root">
-	<Frame offsposx="-400" offsposy="-300" sclposx="0.5" sclposy="0.5" offssizx="800" offssixy="600">
-		<TextLabel content="hi" offsposx="-200" offsposy="0" sclposx="0.5" sclposy="0" offssizx="400" offssizy="50"/>
-		<FancyButton content="press me" goto="OtherUi" offsposx="0" offsposy="0" sclposx="0.5" sclposy="0.5"/>
+	<Frame offsposx="-400" offsposy="-300" sclposx="0.5" sclposy="0.5" offssizx="800" offssizy="600">
+		<TextLabel offsposx="-200" offsposy="0" sclposx="0.5" sclposy="0" offssizx="400" offssizy="50">hi</TextLabel>
+		<FancyButton goto="OtherUi" offsposx="0" offsposy="0" sclposx="0.5" sclposy="0.5">press me</FancyButton>
 	</Frame>
 </Root>

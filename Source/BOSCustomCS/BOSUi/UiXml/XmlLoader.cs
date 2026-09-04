@@ -15,7 +15,16 @@ public class XmlLoader
 
         XmlDocument doc = new XmlDocument();
         XmlReader reader = XmlReader.Create(xml.Stream);
-        doc.Load(reader);
+        try
+        {
+            doc.Load(reader);
+        }
+        catch (XmlException aeiou)
+        {
+            Logger.Warn("BOS XML",$"xml error {aeiou.Message}");
+            return null;
+        }
+
         return doc.DocumentElement;
     }
 }

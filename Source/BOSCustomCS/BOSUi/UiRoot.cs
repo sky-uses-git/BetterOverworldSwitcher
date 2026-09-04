@@ -63,9 +63,11 @@ public class UiRoot : UiElement
             lastElem.Selected = false;
             routEnt.Add(new Coroutine(lastElem.Deselect(elem)));
         }
-        Selected = elem;
-        Selected.Selected = true;
-        routEnt.Add(new Coroutine(Selected.Select(lastElem)));
+        if (elem != null) {
+            Selected = elem;
+            Selected.Selected = true;
+            routEnt.Add(new Coroutine(Selected.Select(lastElem)));
+        }
     }
 
     public void DeselectElem()
