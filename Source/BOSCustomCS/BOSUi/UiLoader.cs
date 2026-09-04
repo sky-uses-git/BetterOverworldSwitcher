@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.Xml;
+using Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi.UiXml;
+using Microsoft.Xna.Framework;
 using Monocle;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
@@ -7,14 +9,17 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 // TODO: load from xml files
 public static class UiLoader
 {
+    private static XmlLoader xmlLoader = new();
     public static UiRoot LoadFromXML(string filename)
     {
-        
+        XmlElement ui = xmlLoader.Load(filename);
+        Logger.Info("BOS UiLoader",ui.LocalName);
         return null;
     }
 
     public static UiRoot Load(string id)
     {
+        LoadFromXML("Graphics/Atlases/Mountain/SkyIsYou/BetterOverworldSwitcher/Ui/" + id);
         Logger.Info("BOS","load ui "+id+" called");
         if (id.Equals("root")) return loadroot();
         if (id.Equals("fileselect")) return loadfilesel();
