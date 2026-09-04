@@ -13,7 +13,7 @@ public static class UiLoader
     public static UiRoot LoadFromXML(string filename)
     {
         XmlElement ui = xmlLoader.Load(filename);
-        Logger.Info("BOS UiLoader",ui.LocalName);
+        //Logger.Info("BOS UiLoader",ui.LocalName);
         return null;
     }
 
