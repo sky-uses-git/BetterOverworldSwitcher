@@ -48,6 +48,7 @@ public class BOSHostScene : Scene
         Add(Snow = loader.Snow ?? new());
         Add(CamController = new(Viewer));
         RendererList.UpdateLists();
+        Entities.UpdateLists();
     }
 
     private void LoadMtnScene3D(EngineEntity engine, Scene scene)
