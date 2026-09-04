@@ -15,6 +15,11 @@ public class BOSLoaderFuncs
     private static OverworldLoader refloader;
     private static Thread activeThread;
 
+    public static IEnumerable EnsureDependencies()
+    {
+        while (!Celeste3DEngineLoader.Loaded) yield return null;
+    }
+
     public static void Begin(OverworldLoader self)
     {
         loaded = false;
@@ -52,6 +57,7 @@ public class BOSLoaderFuncs
 
     private static IEnumerator Routine(Session session)
     {
+        yield return EnsureDependencies();
         while (!loaded) yield return null;
         Engine.Scene = overworld;
     }

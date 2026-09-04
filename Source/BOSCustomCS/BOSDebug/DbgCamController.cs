@@ -1,4 +1,5 @@
-﻿using Celeste.Mod.Core;
+﻿using Celeste.Mod.Celeste3DEngine;
+using Celeste.Mod.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Monocle;
@@ -7,7 +8,8 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSDebug;
 
 public class DbgCamController : Entity
 {
-    private MountainModel Viewer => BOSHostScene.Instance.Renderer.Viewer;
+    private Scene3D Viewer => BOSHostScene.Instance.Viewer;
+    private Camera3D Camera => Viewer.GetRenderingCamera();
     public float Speed = 1f;
     private Vector2 oldPos;
 
@@ -51,21 +53,21 @@ public class DbgCamController : Entity
     }
     private void dbg_moveCamRel(Vector3 rel,float speed)
     {
-        Viewer.Camera.Position += Vector3.Transform(rel, Viewer.Camera.Rotation.Conjugated())*Engine.DeltaTime*speed;
+        Camera.transform.SetPosition(Camera.transform.Position + Vector3.Transform(rel, Camera.transform.Rotation.Conjugated())*Engine.DeltaTime*speed);
     }
     private void dbg_centerCam()
     {
-        Viewer.Camera.Position = Vector3.Zero;
+        Camera.transform.SetPosition(Vector3.Zero);
     }
 
     private void dbg_rotCam(int mouseDeltX,int mouseDeltY)
     {
-        Vector3 right = Vector3.Transform(Vector3.Right, Viewer.Camera.Rotation.Conjugated());
+        Vector3 right = Vector3.Transform(Vector3.Right, Camera.transform.Rotation.Conjugated());
         Vector3 up = Vector3.UnitY;
         Quaternion pitch = Quaternion.CreateFromAxisAngle(right, mouseDeltY/100f);
         Quaternion yaw = Quaternion.CreateFromAxisAngle(up, mouseDeltX/100f);
-        Viewer.Camera.Rotation *= pitch;
-        Viewer.Camera.Rotation *= yaw;
-        Viewer.Camera.Rotation = Quaternion.Normalize(Viewer.Camera.Rotation);
+        Camera.transform.SetRotation(Camera.transform.Rotation * pitch);
+        Camera.transform.SetRotation(Camera.transform.Rotation * yaw);
+        Camera.transform.SetRotation(Quaternion.Normalize(Camera.transform.Rotation));
     }
 }

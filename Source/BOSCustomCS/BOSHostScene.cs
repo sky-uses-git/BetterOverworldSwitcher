@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using Celeste.Mod.Celeste3DEngine;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Monocle;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS;
@@ -16,12 +18,11 @@ public class BOSHostScene : Scene
 {
     public static BOSHostScene Instance { get; private set; }
 
-    public BOSRenderer Renderer { get; private set; }
+    public Scene3D Viewer { get; private set; }
+    public EngineEntity EngineEntity { get; private set; }
     public BOSCamController CamController { get; private set; }
     public BOSHudRenderer Hud { get; private set; }
     public HiresSnow Snow { get; private set; }
-    public Snow3D Snow3D { get; private set; }
-    
     public bool Debug { get; private set; } = false;
     
     public override void Update()
@@ -33,17 +34,42 @@ public class BOSHostScene : Scene
     public BOSHostScene(OverworldLoader loader)
     {
         Instance = this;
-        Add(Renderer = new());
+        EntityData e = new EntityData();
+        e.Values = new();
+        e.Values["modelsPath"] = "Graphics/3DEngine/DefaultModels";
+        e.Values["texturesPath"] = "Graphics/3DEngine/DefaultTextures";
+        e.Values["exportsPath"] = "Graphics/3DEngine/DefaultExports";
+        e.Values["fontsPath"] = "Graphics/3DEngine/DefaultFonts";
+        e.Values["audioPath"] = "Graphics/3DEngine/DefaultAudio";
+        e.Values["persistent"] = true;
+        EngineEntity.OnEngineLoad += LoadMtnScene3D;
+        Add(EngineEntity = new EngineEntity(e, Vector2.Zero));
         Add(Hud = new(loader.StartMode));
-        Add(Snow3D = new Snow3D(Renderer.Viewer));
         Add(Snow = loader.Snow ?? new());
-        Add(CamController = new(Renderer.Viewer));
+        Add(CamController = new(Viewer));
         RendererList.UpdateLists();
+    }
+
+    private void LoadMtnScene3D(EngineEntity engine, Scene scene)
+    {
+        Viewer = new Scene3D();
+        Camera3D mainCam = new();
+        Viewer.AddGameObject(mainCam);
+        Viewer.SetMainCamera(mainCam);
+        GameObject mtnplane = GameObject.DefaultPlane;
+        mtnplane.transform.SetScale(new Vector3(25,5,25));
+        Viewer.AddGameObject(mtnplane);
+        GameObject mtn = GameObject.DefaultCube;
+        mtn.transform.SetScale(new Vector3(5,5,5));
+        Viewer.AddGameObject(mtn);
+        Viewer.ChangeSkyBox("sky");
+        Viewer.GetRenderer().SetHDMode(true);
+        EngineEntity.LoadScene(Viewer);
     }
 
     public override void End()
     {
-        Renderer.End();
+        Remove(EngineEntity);
         Hud.End();
         Instance = null;
         base.End();

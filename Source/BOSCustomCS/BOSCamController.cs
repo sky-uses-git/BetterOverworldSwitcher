@@ -1,5 +1,6 @@
 ﻿using System;
 using Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
+using Celeste.Mod.Celeste3DEngine;
 using Celeste.Mod.Helpers;
 using Microsoft.Xna.Framework;
 using Monocle;
@@ -47,10 +48,10 @@ public class BOSCamController : Entity
         private set => _tweencircleVdsp.TweenTo(value);
     }
     public float CircleRotSpeed { get; private set; } = .0015f;
-    public MountainCamera Camera;
-    public MountainModel ViewerTarget { get; private set; }
+    public Scene3D ViewerTarget { get; private set; }
+    public Camera3D Camera { get; private set; }
 
-    public Vector3 GetCamVec(Vector3 rel) => Vector3.Transform(rel, Camera.Rotation.Conjugated());
+    public Vector3 GetCamVec(Vector3 rel) => Vector3.Transform(rel, Camera.transform.Rotation.Conjugated());
     public Vector3 GetForward => GetCamVec(Vector3.Forward);
     public Vector3 GetBackward => GetCamVec(Vector3.Backward);
     public Vector3 GetUp => GetCamVec(Vector3.Up);
@@ -61,8 +62,8 @@ public class BOSCamController : Entity
     private void moveAroundTo(Vector3 pos,Vector3 dispvec)
     {
         Target = pos;
-        Camera.Position = Target + dispvec;
-        Camera.LookAt(Target);
+        Camera.transform.SetPosition(Target + dispvec);
+        Camera.transform.LookAt(Target);
         CircleMag = dispvec.XZ().Length();
         CircleRot = (float)Math.Atan2(dispvec.Z,dispvec.X);
         CircleVdsp = dispvec.Y;
@@ -109,23 +110,21 @@ public class BOSCamController : Entity
             float s = (float)Math.Sin(CircleRot+_circleRotOffset);
             float c = (float)Math.Cos(CircleRot+_circleRotOffset);
             Vector3 dispvec = ( Vector3.Forward * c + Vector3.Right * s ) * CircleMag + Vector3.Up * CircleVdsp;
-            Camera.Position = Target+dispvec;
-            Camera.LookAt(Target);
+            Camera.transform.SetPosition(Target+dispvec);
+            Camera.transform.LookAt(Target);
             if (CamMode == BOSEnum.CameraMode.CircleAroundPos && !transitioning)
                 _circleRotOffset += CircleRotSpeed;
         }
         else
         {
-            Camera.Position = CamPosition;
-            Camera.LookAt(Target);
+            Camera.transform.SetPosition(CamPosition);
+            Camera.transform.LookAt(Target);
         }
-
-        ViewerTarget.Camera = Camera;
 
         base.Update();
     }
 
-    public BOSCamController(MountainModel Viewer)
+    public BOSCamController(Scene3D Viewer)
     {
         _tweenTarget = new Tweenable<Vector3>(Vector3.Zero, 1f, Vector3.Lerp);
         _tweencircleMag = new Tweenable<float>(0f, 1f, float.Lerp);
@@ -140,6 +139,7 @@ public class BOSCamController : Entity
         Add(_tweencircleRot.Tween);
         Add(_tweencircleVdsp.Tween);
         ViewerTarget = Viewer;
+        Camera = ViewerTarget.GetRenderingCamera();
         Circle(new Vector3(0,4.3f,1.125f),18,6,-62.5f);
         _tweenTarget.CompleteTweenOnUpdate = false;
     }

@@ -43,9 +43,8 @@ public class DbgHudRenderer : Renderer
             "BetterOverworldSwitcher "+BetterOverworldSwitcherModule.Instance.Metadata.VersionString+"\n"+
             Everest.BuildString + "\n\n" +
             "camera\n" +
-            "\tPOS: "+HostScene.Renderer.Viewer.Camera.Position + "\n" +
-            "\tROT: "+Vector3.Transform(Vector3.Forward, HostScene.Renderer.Viewer.Camera.Rotation.Conjugated()) + "\n" +
-            "\tTAR: "+HostScene.Renderer.Viewer.Camera.Target + "\n" +
+            "\tPOS: "+HostScene.Viewer.GetRenderingCamera().transform.Position + "\n" +
+            "\tROT: "+Vector3.Transform(Vector3.Forward, HostScene.Viewer.GetRenderingCamera().transform.Rotation.Conjugated()) + "\n" +
             "cSPD: "+camController.Speed + "\n"
             );
     }
