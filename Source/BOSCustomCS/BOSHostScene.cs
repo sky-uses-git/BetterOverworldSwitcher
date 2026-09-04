@@ -57,10 +57,13 @@ public class BOSHostScene : Scene
         Viewer.AddGameObject(mainCam);
         Viewer.SetMainCamera(mainCam);
         GameObject mtnplane = GameObject.DefaultPlane;
-        mtnplane.transform.SetScale(new Vector3(25,5,25));
+        mtnplane.transform.SetScale(new Vector3(25,1,25));
+        mtnplane.GetComponent<MeshRenderer>().ChangeLayer(ModelLayer.Foreground);
         Viewer.AddGameObject(mtnplane);
         GameObject mtn = GameObject.DefaultCube;
-        mtn.transform.SetScale(new Vector3(5,5,5));
+        mtn.transform.SetScale(new Vector3(.5f,.5f,.5f));
+        mtn.transform.SetPosition(new Vector3(0,.25f,0));
+        mtn.GetComponent<MeshRenderer>().ChangeLayer(ModelLayer.Foreground);
         Viewer.AddGameObject(mtn);
         Viewer.ChangeSkyBox("sky");
         Viewer.GetRenderer().SetHDMode(true);
