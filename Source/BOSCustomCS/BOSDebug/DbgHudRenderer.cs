@@ -36,17 +36,28 @@ public class DbgHudRenderer : Renderer
         base.Update(scene);
     }
 
+    private string getCameraString()
+    {
+        return "\tPOS: " + HostScene.Renderer.Viewer.Camera.Position + "\n" +
+               "\tROT: " + HostScene.Renderer.Viewer.Camera.Rotation +
+               "\n" +
+               "\tTAR: " + HostScene.Renderer.Viewer.Camera.Target + "\n" +
+               "cSPD: " + camController.Speed;
+    }
+
+    private string getViewerString()
+    {
+        if (HostScene.Renderer.Viewer == null) return "VIEWER = NULL";
+        return $"camera\n{getCameraString()}";
+    }
+
     private string getDebugString()
     {
         return (
             "hello from "+GetType().Name+"\n"+
             "BetterOverworldSwitcher "+BetterOverworldSwitcherModule.Instance.Metadata.VersionString+"\n"+
             Everest.BuildString + "\n\n" +
-            "camera\n" +
-            "\tPOS: "+HostScene.Renderer.Viewer.Camera.Position + "\n" +
-            "\tROT: "+Vector3.Transform(Vector3.Forward, HostScene.Renderer.Viewer.Camera.Rotation.Conjugated()) + "\n" +
-            "\tTAR: "+HostScene.Renderer.Viewer.Camera.Target + "\n" +
-            "cSPD: "+camController.Speed + "\n"
+            getViewerString() + "\n\n"
             );
     }
 }
