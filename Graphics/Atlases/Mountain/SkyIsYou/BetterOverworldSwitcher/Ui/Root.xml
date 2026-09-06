@@ -7,9 +7,8 @@
 		sclposy="0.15"
 		offssizx="1000"
 		offssizy="80"
-		fontsize=72>
-		BetterOverworldSwitcher Host
-	</TextLabel>
+		fontsize="72"
+		value="BetterOverworldSwitcher Host"/>
 	
 	<Frame
 		offsposx="-400"
@@ -17,8 +16,8 @@
 		sclposx="0.5"
 		sclposy="0.575"
 		offssizx="800"
-		offssizy="500"
-	>
+		offssizy="500">
+		
 		<FancyButton id="fileselect"
 			up="exit"
 			down="debug"
@@ -30,8 +29,8 @@
 			offssizx="200"
 			offssizy="80"
 			bgcolor="8B0000"
-			bgopacity="0.4"
-		>file select</FancyButton>
+			bgopacity="0.5"
+			value="file select"/>
 		<FancyButton id="debug"
 			up="fileselect"
 			down="notfound"
@@ -43,8 +42,8 @@
 			offssizx="200"
 			offssizy="80"
 			bgcolor="FF4500"
-			bgopacity="0.4"
-		>debug</FancyButton>
+			bgopacity="0.5"
+			value="debug"/>
 		<FancyButton id="notfound"
 			up="debug"
 			down="settings"
@@ -56,8 +55,8 @@
 			offssizx="200"
 			offssizy="80"
 			bgcolor="FFD700"
-			bgopacity="0.4"
-		>test notfound</FancyButton>
+			bgopacity="0.5"
+			value="test notfound"/>
 		<FancyButton id="settings"
 			up="notfound"
 			down="exit"
@@ -69,8 +68,8 @@
 			offssizx="200"
 			offssizy="80"
 			bgcolor="008000"
-			bgopacity="0.4"
-		>settings</FancyButton>
+			bgopacity="0.5"
+			value="settings"/>
 		<FancyButton id="exit"
 			up="settings"
 			down="fileselect"
@@ -82,8 +81,8 @@
 			offssizx="200"
 			offssizy="80"
 			bgcolor="00008B"
-			bgopacity="0.4"
-		>exit game</FancyButton>
+			bgopacity="0.5"
+			value="exit game"/>
 		<FancyButton id="vanilla"
 			up="exit"
 			down="debug"
@@ -96,7 +95,7 @@
 			offssizy="80"
 			txcolor="000000"
 			bgcolor="87CEEB"
-			bgopacity="0.4"
-		>back to vanilla</FancyButton>
+			bgopacity="0.5"
+			value="back to vanilla"/>
 	</Frame>
 </Root>

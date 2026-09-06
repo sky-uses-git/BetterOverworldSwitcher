@@ -14,10 +14,10 @@ public class UiElement : Actor, IDisposable
     
     // for selection
     public event Action OnPress;
-    public UiElement UpElement;
-    public UiElement DownElement;
-    public UiElement LeftElement;
-    public UiElement RightElement;
+    public string UpElement;
+    public string DownElement;
+    public string LeftElement;
+    public string RightElement;
     public bool Selected;
     public bool Focused;
 

@@ -23,7 +23,6 @@ public class UiLoader
             if (uiChildNode.GetType().IsAssignableTo(typeof(XmlElement)))
                 Children.Add(ConstructUIFromXml((XmlElement)uiChildNode));
         UiElement me;
-        
         switch (ui.LocalName)
         {
             case "Root": {
@@ -35,19 +34,19 @@ public class UiLoader
             case "Frame": {
                 me = new UiFrame(attrs.transform.Position.Offset,attrs.transform.Position.Scale);
                 me.Size = attrs.transform.Size;
-                ((UiFrame)me).BackgroundColor = attrs.common.bgColor;
+                ((UiFrame)me).BackgroundColor = attrs.common.bgColor*attrs.common.opacity;
                 break;
             }
             case "TextLabel": {
-                me = new UiTextLabel(attrs.text.Value,attrs.transform.Position.Offset,attrs.transform.Position.Scale);
+                me = new UiTextLabel(attrs.text.Value,attrs.text.size,attrs.transform.Position.Offset,attrs.transform.Position.Scale);
                 me.Size = attrs.transform.Size;
-                ((UiTextLabel)me).BackgroundColor = attrs.common.bgColor;
+                ((UiTextLabel)me).BackgroundColor = attrs.common.bgColor*attrs.common.opacity;
                 break;
             }
             case "FancyButton": {
-                me = new UiFancyButton(attrs.text.Value,attrs.transform.Position.Offset,attrs.transform.Position.Scale);
+                me = new UiFancyButton(attrs.text.Value,attrs.text.size,attrs.transform.Position.Offset,attrs.transform.Position.Scale);
                 me.Size = attrs.transform.Size;
-                ((UiFancyButton)me).BackgroundColor = attrs.common.bgColor;
+                ((UiFancyButton)me).BackgroundColor = attrs.common.bgColor*attrs.common.opacity;
                 break;
             }
             default: {
@@ -58,6 +57,11 @@ public class UiLoader
                 break;
             }
         }
+        me.id = attrs.id;
+        me.UpElement = attrs.nav.up;
+        me.DownElement = attrs.nav.down;
+        me.LeftElement = attrs.nav.left;
+        me.RightElement = attrs.nav.right;
         Children.ForEach(e=>me.AddChild(e));
         return me;
     }

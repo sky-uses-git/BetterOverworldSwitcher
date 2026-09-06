@@ -35,27 +35,18 @@ public class UiRoot : UiElement
         base.Removed(scene);
     }
 
-    public void SelectUp()
+    public void SelectUp() => SelectElemById(Selected.UpElement);
+    public void SelectLeft() => SelectElemById(Selected.LeftElement);
+    public void SelectDown() => SelectElemById(Selected.DownElement);
+    public void SelectRight() => SelectElemById(Selected.RightElement);
+
+    public void SelectElemById(string elemid)
     {
-        if (Selected.UpElement != null)
-            SelectElem(Selected.UpElement);
+        if (string.IsNullOrEmpty(elemid)) return;
+        UiElement child = FindChildByID(elemid);
+        if (child!=null) SelectElem(child);
     }
-    public void SelectLeft()
-    {
-        if (Selected.LeftElement != null)
-            SelectElem(Selected.LeftElement);
-    }
-    public void SelectDown()
-    {
-        if (Selected.DownElement != null)
-            SelectElem(Selected.DownElement);
-    }
-    public void SelectRight()
-    {
-        if (Selected.RightElement != null)
-            SelectElem(Selected.RightElement);
-    }
-    
+
     public void SelectElem(UiElement elem)
     {
         UiElement lastElem = Selected;

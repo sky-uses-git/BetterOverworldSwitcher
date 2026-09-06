@@ -13,13 +13,23 @@ public static class UiAttr
 
     public struct Element
     {
+        public string id;
         public bool TopLevel;
         public Dictionary<string, Element> children;
         public object? parent;
         public Transform transform;
         public Common common;
+        public Navigation nav;
         public Text text;
         public Root root;
+    }
+
+    public struct Navigation
+    {
+        public string up;
+        public string down;
+        public string left;
+        public string right;
     }
 
     public struct Common
