@@ -8,7 +8,7 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 public class UiRoot : UiElement
 {
     public UiElement Selected;
-    public UiElement SelectFirst;
+    public string SelectFirst;
     public Entity routEnt;
     public UiRoot(string rootid) : base(Vector2.Zero,Vector2.Zero)
     {

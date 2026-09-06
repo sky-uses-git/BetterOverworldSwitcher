@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 using Monocle;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS;
@@ -6,22 +7,22 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS;
 public class BOSHudRenderer : Renderer
 {
     public static BOSHudRenderer Instance;
-    private BOSDebug.DbgHudRenderer dbghud;
+    private UiLoader loader;
     private BOSHostScene HostScene => BOSHostScene.Instance;
 
     public bool Transitioning { get; private set; }
 
-    private BOSUi.UiRoot PreviousUi;
-    private BOSUi.UiRoot CurrentUi;
-    private BOSUi.UiRoot NextUi;
+    private UiRoot PreviousUi;
+    private UiRoot CurrentUi;
+    private UiRoot NextUi;
 
     private Entity routineEntity;
 
     public BOSHudRenderer(Overworld.StartMode startMode)
     {
         Instance = this;
+        loader = new UiLoader();
         HostScene.Add(routineEntity = new());
-        HostScene.Add(dbghud = new BOSDebug.DbgHudRenderer());
         HostScene.Entities.UpdateLists();
         if (startMode == Overworld.StartMode.MainMenu)
             Goto("root");
@@ -63,7 +64,7 @@ public class BOSHudRenderer : Renderer
         base.Render(scene);
     }
 
-    private IEnumerator GotoRoutine(BOSUi.UiRoot newroot)
+    private IEnumerator GotoRoutine(UiRoot newroot)
     {
         Transitioning = true;
         Logger.Info("BOS","goto called "+newroot.id);
@@ -80,11 +81,11 @@ public class BOSHudRenderer : Renderer
         CurrentUi = NextUi;
         NextUi = null;
         Transitioning = false;
-        CurrentUi.SelectElem(CurrentUi.SelectFirst);
+        CurrentUi.SelectElem(CurrentUi.FindChildByID(CurrentUi.SelectFirst));
     }
     public void Goto(string id)
     {
-        BOSUi.UiRoot newroot = BOSUi.UiLoader.Load(id);
+        UiRoot newroot = loader.Load(id);
         routineEntity.Add(new Coroutine(GotoRoutine(newroot)));
     }
 

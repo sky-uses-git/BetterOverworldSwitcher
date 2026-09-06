@@ -80,7 +80,7 @@ public class UiElement : Actor, IDisposable
     public Vector2 RealSize => JustifiedSize;
     public Vector2 RenderPosition => (RenderMode != UiEnum.RenderMode.All) ? Vector2.Zero : JustifiedPosition+parentRenderPos;
     public Vector2 RenderSize => RealSize;
-    
+
     private VirtualRenderTarget elemBuffer;
 
     public void BeforeRender()
@@ -246,5 +246,13 @@ public class UiElement : Actor, IDisposable
     public virtual IEnumerator Deselect(UiElement next)
     {
         yield return null;
+    }
+
+    public UiElement FindChildByID(string id)
+    {
+        UiElement ch=null;
+        Children.ForEach(e => ch = e.FindChildByID(id));
+        if (ch != null) return ch; // id was found in child
+        return Children.Find(e => e.id == id); // find id in ourselves
     }
 }

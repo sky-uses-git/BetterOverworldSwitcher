@@ -19,6 +19,7 @@ public class BOSHostScene : Scene
     public BOSRenderer Renderer { get; private set; }
     public BOSCamController CamController { get; private set; }
     public BOSHudRenderer Hud { get; private set; }
+    public BOSDebug.DbgHudRenderer DbgHud { get; private set; }
     public HiresSnow Snow { get; private set; }
     public Snow3D Snow3D { get; private set; }
     
@@ -35,6 +36,7 @@ public class BOSHostScene : Scene
         Instance = this;
         Add(Renderer = new());
         Add(Hud = new(loader.StartMode));
+        Add(DbgHud = new());
         Add(Snow3D = new Snow3D(Renderer.Viewer));
         Add(Snow = loader.Snow ?? new());
         Add(CamController = new(Renderer.Viewer));

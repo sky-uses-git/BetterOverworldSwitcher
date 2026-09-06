@@ -1,6 +1,102 @@
-<Root id="Root">
-	<Frame offsposx="-400" offsposy="-300" sclposx="0.5" sclposy="0.5" offssizx="800" offssizy="600">
-		<TextLabel offsposx="-200" offsposy="0" sclposx="0.5" sclposy="0" offssizx="400" offssizy="50">hi</TextLabel>
-		<FancyButton goto="OtherUi" offsposx="0" offsposy="0" sclposx="0.5" sclposy="0.5">press me</FancyButton>
+<Root id="mainmenu" select="fileselect">
+	
+	<TextLabel
+		offsposx="-500"
+		offsposy="-40"
+		sclposx="0.5"
+		sclposy="0.15"
+		offssizx="1000"
+		offssizy="80"
+		fontsize=72>
+		BetterOverworldSwitcher Host
+	</TextLabel>
+	
+	<Frame
+		offsposx="-400"
+		offsposy="-250"
+		sclposx="0.5"
+		sclposy="0.575"
+		offssizx="800"
+		offssizy="500"
+	>
+		<FancyButton id="fileselect"
+			up="exit"
+			down="debug"
+			right="vanilla"
+			offsposx="-100"
+			offsposy="-0"
+			sclposx="0.5"
+			sclposy="0"
+			offssizx="200"
+			offssizy="80"
+			bgcolor="8B0000"
+			bgopacity="0.4"
+		>file select</FancyButton>
+		<FancyButton id="debug"
+			up="fileselect"
+			down="notfound"
+			right="vanilla"
+			offsposx="-100"
+			offsposy="-20"
+			sclposx="0.5"
+			sclposy="0.25"
+			offssizx="200"
+			offssizy="80"
+			bgcolor="FF4500"
+			bgopacity="0.4"
+		>debug</FancyButton>
+		<FancyButton id="notfound"
+			up="debug"
+			down="settings"
+			right="vanilla"
+			offsposx="-100"
+			offsposy="-40"
+			sclposx="0.5"
+			sclposy="0.5"
+			offssizx="200"
+			offssizy="80"
+			bgcolor="FFD700"
+			bgopacity="0.4"
+		>test notfound</FancyButton>
+		<FancyButton id="settings"
+			up="notfound"
+			down="exit"
+			right="vanilla"
+			offsposx="-100"
+			offsposy="-60"
+			sclposx="0.5"
+			sclposy="0.75"
+			offssizx="200"
+			offssizy="80"
+			bgcolor="008000"
+			bgopacity="0.4"
+		>settings</FancyButton>
+		<FancyButton id="exit"
+			up="settings"
+			down="fileselect"
+			right="vanilla"
+			offsposx="-100"
+			offsposy="-80"
+			sclposx="0.5"
+			sclposy="1"
+			offssizx="200"
+			offssizy="80"
+			bgcolor="00008B"
+			bgopacity="0.4"
+		>exit game</FancyButton>
+		<FancyButton id="vanilla"
+			up="exit"
+			down="debug"
+			left="fileselect"
+			offsposx="-200"
+			offsposy="-0"
+			sclposx="1"
+			sclposy="0"
+			offssizx="200"
+			offssizy="80"
+			txcolor="000000"
+			bgcolor="87CEEB"
+			bgopacity="0.4"
+		>back to vanilla</FancyButton>
 	</Frame>
 </Root>
