@@ -1,4 +1,4 @@
-<Root id="mainmenu" select="back">
+<Root id="fileselect" select="back">
 	
 	<TextLabel
 		offsposx="-500"

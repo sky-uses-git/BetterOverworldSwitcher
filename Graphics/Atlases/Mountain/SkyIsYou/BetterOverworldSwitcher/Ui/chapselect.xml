@@ -1,4 +1,4 @@
-<Root id="mainmenu" select="back">
+<Root id="chapselect" select="back">
 	
 	<TextLabel
 		offsposx="-500"
