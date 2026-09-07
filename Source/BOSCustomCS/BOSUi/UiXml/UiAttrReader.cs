@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Xml;
 using Microsoft.Xna.Framework;
@@ -7,95 +8,76 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi.UiXml;
 
 public class UiAttrReader
 {
-    private static UiAttr.Transform GetTransform(XmlElement elem)
+    private static T GetAttr<T>(XmlElement elem,string name,T defaultval)
     {
-        string s_offsposx = elem.GetAttribute("offsposx");
-        string s_offsposy = elem.GetAttribute("offsposy");
-        string s_sclposx = elem.GetAttribute("sclposx");
-        string s_sclposy = elem.GetAttribute("sclposy");
-        string s_offssizx = elem.GetAttribute("offssizx");
-        string s_offssizy = elem.GetAttribute("offssizy");
-        string s_sclsizx = elem.GetAttribute("sclsizx");
-        string s_sclsizy = elem.GetAttribute("sclsizy");
-        int offsposx=0;
-        int offsposy=0;
-        float sclposx=0;
-        float sclposy=0;
-        int offssizx=0;
-        int offssizy=0;
-        float sclsizx=0;
-        float sclsizy=0;
-        if ((s_offsposx.Length==0 || int.TryParse(s_offsposx, out offsposx)) &&
-            (s_offsposy.Length==0 || int.TryParse(s_offsposy, out offsposy)) &&
-            (s_sclposx.Length==0 || float.TryParse(s_sclposx, out sclposx)) &&
-            (s_sclposy.Length==0 || float.TryParse(s_sclposy, out sclposy)) &&
-            (s_offssizx.Length==0 || int.TryParse(s_offssizx, out offssizx)) &&
-            (s_offssizy.Length==0 || int.TryParse(s_offssizy, out offssizy)) &&
-            (s_sclsizx.Length==0 || float.TryParse(s_sclsizx, out sclsizx)) &&
-            (s_sclsizy.Length==0 || float.TryParse(s_sclsizy, out sclsizy)))
-            return new UiAttr.Transform(){
-                Position=new ScaleOffset(offsposx, offsposy, sclposx, sclposy),
-                Size=new ScaleOffset(offssizx, offssizy, sclsizx, sclsizy)
-            };
-        return new UiAttr.Transform();
+        if (!elem.HasAttribute(name)) return defaultval;
+        string s_val = elem.GetAttribute(name);
+        TypeConverter conv = TypeDescriptor.GetConverter(typeof(T));
+        if (!conv.CanConvertFrom(typeof(string))) {
+            Logger.Error("BOS attr","cannot convert type "+typeof(T).Name+" to string ("+name+" = "+s_val+")");
+            throw new ArgumentOutOfRangeException(typeof(T).Name);
+        }
+        if (typeof(T) == typeof(Color)) // special case(ew)
+        {
+            Color? col = colorFromHex(s_val);
+            if (col == null) goto invalid;
+            return (T)(object)col;
+        }
+        if (!conv.IsValid(s_val)) goto invalid;
+        return (T)conv.ConvertFromString(s_val);
+invalid:
+        Logger.Warn("BOS attr","passed value of "+s_val+" for "+name+" (type "+typeof(T).Name+") is invalid");
+        return defaultval;
     }
 
-    private static Color colorFromHex(string num)
+    private static UiAttr.Transform GetTransform(XmlElement elem)
+    {
+        int offsposx = GetAttr<int>(elem, "offsposx", 0);
+        int offsposy = GetAttr<int>(elem, "offsposy", 0);
+        float sclposx = GetAttr<float>(elem, "sclposx", 0f);
+        float sclposy = GetAttr<float>(elem, "sclposy", 0f);
+        int offssizx = GetAttr<int>(elem, "offssizx", 0);
+        int offssizy = GetAttr<int>(elem, "offssizy", 0);
+        float sclsizx = GetAttr<float>(elem, "sclsizx", 0f);
+        float sclsizy = GetAttr<float>(elem, "sclsizy", 0f);
+        return new UiAttr.Transform(){
+            Position=new ScaleOffset(offsposx, offsposy, sclposx, sclposy),
+            Size=new ScaleOffset(offssizx, offssizy, sclsizx, sclsizy)
+        };
+    }
+
+    private static Color? colorFromHex(string num)
     {
         int bgcolor = 0;
         if (!int.TryParse(num, NumberStyles.HexNumber, null, out bgcolor))
-            return Color.Transparent;
+            return null;
         return new Color((bgcolor & 0xFF0000) >> 16, (bgcolor & 0xFF00) >> 8, bgcolor & 0xFF);
     }
 
     private static UiAttr.Common GetCommon(XmlElement elem)
     {
         UiAttr.Common com = new();
-        string s_bgcolor = elem.GetAttribute("bgcolor");
-        string s_opacity = elem.GetAttribute("bgopacity");
-        Color bgcolor = colorFromHex(s_bgcolor);
-        float opacity = 0f;
-        if (s_opacity.Length != 0) float.TryParse(s_opacity, out opacity);
-        com.bgColor = bgcolor;
-        com.opacity = opacity;
+        com.bgColor = GetAttr<Color>(elem, "bgcolor", Color.Transparent);
+        com.opacity = GetAttr<float>(elem, "bgopacity", 0f);
         return com;
     }
 
     private static UiAttr.Text GetTextAttrs(XmlElement elem)
     {
         UiAttr.Text tx = new();
-        string s_txcolor = elem.GetAttribute("txcolor");
-        string s_shcolor = elem.GetAttribute("shcolor");
-        string s_txopacity = elem.GetAttribute("txopacity");
-        string s_shopacity = elem.GetAttribute("shopacity");
-        string s_txsize = elem.GetAttribute("fontsize");
-        string s_shdist = elem.GetAttribute("shdist");
-        string txvalue = elem.GetAttribute("value");
-        Color txcolor = colorFromHex(s_txcolor);
-        Color shcolor = colorFromHex(s_shcolor);
-        float txopacity = 1;
-        float shopacity = .4f;
-        float txsize = 24;
-        float shdist = 8;
-        if (s_shdist.Length != 0) float.TryParse(s_txopacity, out txopacity);
-        if (s_shdist.Length != 0) float.TryParse(s_shopacity, out shopacity);
-        if (s_txsize.Length != 0) float.TryParse(s_txsize, out txsize);
-        if (s_shdist.Length != 0) float.TryParse(s_shdist, out shdist);
-        tx.opacity = txopacity;
-        tx.shadowopacity = shopacity;
-        tx.size = txsize;
-        tx.shadowdist = shdist;
-        tx.color = txcolor;
-        tx.shadowcolor = shcolor;
-        tx.Value = txvalue;
+        tx.opacity = GetAttr<float>(elem,"txopacity",1f);
+        tx.shadowopacity = GetAttr<float>(elem,"txopacity",.4f);
+        tx.size = GetAttr<float>(elem,"fontsize",24f);
+        tx.shadowdist = GetAttr<float>(elem,"shdist",8f);
+        tx.color = GetAttr<Color>(elem,"txcolor",Color.White);
+        tx.shadowcolor = GetAttr<Color>(elem,"shcolor",Color.Black);
+        tx.Value = GetAttr<string>(elem,"value","Empty");
         return tx;
     }
 
     private static string GetId(XmlElement elem)
     {
-        string id = elem.GetAttribute("id");
-        if (id.Length == 0) return elem.LocalName+"-"+Guid.NewGuid();
-        return id;
+        return GetAttr<string>(elem,"id",elem.LocalName+"-"+Guid.NewGuid());
     }
 
     private static UiAttr.Navigation GetNav(XmlElement elem)
@@ -106,6 +88,13 @@ public class UiAttrReader
         nav.left = elem.GetAttribute("left");
         nav.right = elem.GetAttribute("right");
         return nav;
+    }
+
+    private static UiAttr.Button GetButtonAttrs(XmlElement elem)
+    {
+        UiAttr.Button btn = new();
+        btn.gotoid = GetAttr<string>(elem,"goto",null);
+        return btn;
     }
 
     public static UiAttr.Element ConstructAttrs(XmlElement ui,UiAttr.Element parent,string? id=null)
@@ -139,14 +128,12 @@ public class UiAttrReader
                 attrs.text = GetTextAttrs(ui);
                 break;
             }
-            case "Button": { 
-                attrs.common = GetCommon(ui);
-                attrs.text = GetTextAttrs(ui);
-                break; }
+            case "Button":
             case "FancyButton":
             {
                 attrs.common = GetCommon(ui);
                 attrs.text = GetTextAttrs(ui);
+                attrs.button = GetButtonAttrs(ui);
                 break;
             }
             case "Frame":

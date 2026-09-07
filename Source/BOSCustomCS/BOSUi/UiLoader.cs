@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using System.Xml;
 using Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi.UiXml;
@@ -47,6 +48,8 @@ public class UiLoader
                 me = new UiFancyButton(attrs.text.Value,attrs.text.size,attrs.transform.Position.Offset,attrs.transform.Position.Scale);
                 me.Size = attrs.transform.Size;
                 ((UiFancyButton)me).BackgroundColor = attrs.common.bgColor*attrs.common.opacity;
+                if (attrs.button.gotoid!=null)
+                    me.OnPress += ()=>BOSHostScene.Instance.Hud.Goto(attrs.button.gotoid);
                 break;
             }
             default: {
@@ -66,25 +69,45 @@ public class UiLoader
         return me;
     }
 
-    public UiElement LoadFromXML(string filename) // TODO: add lua support for xml buttons? ?
-    {
-        XmlElement ui = xmlLoader.Load(filename);
-        if (ui != null)
-            return ConstructUIFromXml(ui);
-        return null;
-    }
-
     public UiRoot Load(string id)
     {
-        return (UiRoot)LoadFromXML("Graphics/Atlases/Mountain/SkyIsYou/BetterOverworldSwitcher/Ui/" + id)
-               ?? loadnotfound(id);
+        XmlElement ui = xmlLoader.Load("Graphics/Atlases/Mountain/SkyIsYou/BetterOverworldSwitcher/Ui/" + id);
+        if (ui == null) return loadnotfound(id);
+        try
+        {
+            return (UiRoot)ConstructUIFromXml(ui);
+        }
+        catch (Exception e)
+        {
+            Logger.Error("BOS xml loader", e.Message);
+            return loaderror(id);
+        }
     }
 
     private UiRoot loadnotfound(string id)
     {
         UiRoot root = new("notfound");
         root.Size = ScaleOffset.FromScale(1,1);
-        UiTextLabel notfoundtx = new("UI of ID "+id+" not found or failed to load", 72,new Vector2(0, -50), new Vector2(0, 0.333f));
+        UiTextLabel notfoundtx = new("UI of ID "+id+" not found", 72,new Vector2(0, -50), new Vector2(0, 0.333f));
+        notfoundtx.TextColor = Color.Red;
+        notfoundtx.BackgroundColor = Color.Black*.75f;
+        notfoundtx.Size = new ScaleOffset(0,100,1,0);
+        UiFancyButton backButton = new("Back to root", new Vector2(-200, -40), new Vector2(0.5f, 0.667f));
+        backButton.TextColor = Color.White;
+        backButton.id = "backbutton";
+        backButton.BackgroundColor = Color.Black;
+        backButton.Size = ScaleOffset.FromOffset(400, 80);
+        backButton.OnPress += () => BOSHudRenderer.Instance.Goto("root");
+        root.AddChild(notfoundtx);
+        root.AddChild(backButton);
+        root.SelectFirst = "backbutton";
+        return root;
+    }
+    private UiRoot loaderror(string id)
+    {
+        UiRoot root = new("notfound");
+        root.Size = ScaleOffset.FromScale(1,1);
+        UiTextLabel notfoundtx = new("UI of ID "+id+" failed to load", 72,new Vector2(0, -50), new Vector2(0, 0.333f));
         notfoundtx.TextColor = Color.Red;
         notfoundtx.BackgroundColor = Color.Black*.75f;
         notfoundtx.Size = new ScaleOffset(0,100,1,0);

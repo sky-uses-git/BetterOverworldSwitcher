@@ -22,6 +22,12 @@ public static class UiAttr
         public Navigation nav;
         public Text text;
         public Root root;
+        public Button button;
+    }
+
+    public struct Button
+    {
+        public string gotoid;
     }
 
     public struct Navigation
