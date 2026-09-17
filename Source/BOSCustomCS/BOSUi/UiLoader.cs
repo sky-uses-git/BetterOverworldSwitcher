@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Xml;
-using Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi.UiXml;
 using Microsoft.Xna.Framework;
-using Monocle;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 
@@ -13,11 +9,11 @@ namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 // TODO: load from xml files
 public class UiLoader
 {
-    private static XmlLoader xmlLoader = new();
+    private static UiXml.XmlLoader xmlLoader = new();
 
     public UiElement ConstructUIFromXml(XmlElement ui)
     {
-        UiAttr.Element attrs = UiAttrReader.ConstructAttrs(ui,new UiAttr.Element(){TopLevel = true});
+        UiXml.Elem.UiAttr.Element attrs = UiXml.Elem.UiAttrReader.ConstructAttrs(ui,new UiXml.Elem.UiAttr.Element(){TopLevel = true});
         
         List<UiElement> Children = new();
         foreach (XmlNode uiChildNode in ui.ChildNodes)

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Xml;
 using Microsoft.Xna.Framework;
 
-namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi.UiXml;
+namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi.UiXml.Elem;
 
 public class UiAttrReader
 {
