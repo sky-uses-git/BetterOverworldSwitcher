@@ -30,16 +30,18 @@ invalid:
         return defaultval;
     }
 
-    private static UiAttr.Transform GetTransform(XmlElement elem)
+    private static UiAttr.Transform GetTransform(XmlElement elem,ScaleOffset defpos=null,ScaleOffset defsiz=null)
     {
-        int offsposx = GetAttr<int>(elem, "offsposx", 0);
-        int offsposy = GetAttr<int>(elem, "offsposy", 0);
-        float sclposx = GetAttr<float>(elem, "sclposx", 0f);
-        float sclposy = GetAttr<float>(elem, "sclposy", 0f);
-        int offssizx = GetAttr<int>(elem, "offssizx", 0);
-        int offssizy = GetAttr<int>(elem, "offssizy", 0);
-        float sclsizx = GetAttr<float>(elem, "sclsizx", 0f);
-        float sclsizy = GetAttr<float>(elem, "sclsizy", 0f);
+        defpos ??= ScaleOffset.Zero;
+        defsiz ??= ScaleOffset.Zero;
+        int offsposx = GetAttr<int>(elem, "offsposx", (int)defpos.Offset.X);
+        int offsposy = GetAttr<int>(elem, "offsposy", (int)defpos.Offset.Y);
+        float sclposx = GetAttr<float>(elem, "sclposx", defpos.Scale.X);
+        float sclposy = GetAttr<float>(elem, "sclposy", defpos.Scale.Y);
+        int offssizx = GetAttr<int>(elem, "offssizx", (int)defsiz.Offset.X);
+        int offssizy = GetAttr<int>(elem, "offssizy", (int)defsiz.Offset.Y);
+        float sclsizx = GetAttr<float>(elem, "sclsizx", defsiz.Scale.X);
+        float sclsizy = GetAttr<float>(elem, "sclsizy", defsiz.Scale.Y);
         return new UiAttr.Transform(){
             Position=new ScaleOffset(offsposx, offsposy, sclposx, sclposy),
             Size=new ScaleOffset(offssizx, offssizy, sclsizx, sclsizy)
@@ -62,16 +64,31 @@ invalid:
         return com;
     }
 
+    private static UiAttr.TextAlign ToTextAlign(string alignstr)
+    {
+        if (alignstr == "topleft") return UiAttr.TextAlign.TopLeft;
+        if (alignstr == "top") return UiAttr.TextAlign.Top;
+        if (alignstr == "topright") return UiAttr.TextAlign.TopRight;
+        if (alignstr == "left") return UiAttr.TextAlign.Left;
+        if (alignstr == "center") return UiAttr.TextAlign.Center;
+        if (alignstr == "right") return UiAttr.TextAlign.Right;
+        if (alignstr == "bottomleft") return UiAttr.TextAlign.BottomLeft;
+        if (alignstr == "bottom") return UiAttr.TextAlign.Bottom;
+        if (alignstr == "bottomright") return UiAttr.TextAlign.BottomRight;
+        return UiAttr.TextAlign.Center;
+    }
+
     private static UiAttr.Text GetTextAttrs(XmlElement elem)
     {
         UiAttr.Text tx = new();
         tx.opacity = GetAttr<float>(elem,"txopacity",1f);
         tx.shadowopacity = GetAttr<float>(elem,"txopacity",.4f);
         tx.size = GetAttr<float>(elem,"fontsize",24f);
-        tx.shadowdist = GetAttr<float>(elem,"shdist",8f);
+        tx.shadowdist = GetAttr<float>(elem,"shdist",0.1f);
         tx.color = GetAttr<Color>(elem,"txcolor",Color.White);
         tx.shadowcolor = GetAttr<Color>(elem,"shcolor",Color.Black);
         tx.Value = GetAttr<string>(elem,"value","Empty");
+        tx.align = ToTextAlign(GetAttr<string>(elem, "align", "center"));
         return tx;
     }
 
@@ -117,6 +134,8 @@ invalid:
         switch(type) {
             case "Root":
             {
+                attrs.transform = GetTransform(ui,defsiz: ScaleOffset.FromScale(1,1));
+                attrs.common = GetCommon(ui);
                 string selfirst = ui.GetAttribute("select");
                 if (selfirst.Length == 0) selfirst = null;
                 attrs.root.selectFirst = selfirst;

@@ -1,0 +1,9 @@
+<TextLabel
+	value="BetterOverworldSwitcher v1.0.0"
+	offsposy="-50"
+	sclposy="1"
+	offssizy="50"
+	sclsizx="1"
+	align="bottomleft"
+	txcolor="00A6FF"
+	shdist="0.15"/>

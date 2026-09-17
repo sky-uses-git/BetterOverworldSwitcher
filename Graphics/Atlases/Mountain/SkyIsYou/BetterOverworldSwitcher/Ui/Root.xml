@@ -1,5 +1,6 @@
 <Root id="mainmenu" select="fileselect">
 	
+	<Include path="common/footer"/>
 	<TextLabel
 		offsposx="-500"
 		offsposy="-40"
@@ -9,7 +10,6 @@
 		offssizy="80"
 		fontsize="72"
 		value="BetterOverworldSwitcher Host"/>
-	
 	<Frame
 		offsposx="-400"
 		offsposy="-250"

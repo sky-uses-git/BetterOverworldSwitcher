@@ -1,5 +1,6 @@
 <Root id="fileselect" select="back">
 	
+	<Include path="common/footer"/>
 	<TextLabel
 		offsposx="-500"
 		offsposy="-40"

@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Monocle;
 
 namespace Celeste.Mod.BetterOverworldSwitcher.BOSCustomCS.BOSUi;
 
 // root / group object meant to contain other uielements and handle transitions between ui screens
-public class UiRoot : UiElement
+public class UiRoot : UiFrame
 {
     public UiElement Selected;
     public string SelectFirst;
     public Entity routEnt;
-    public UiRoot(string rootid) : base(Vector2.Zero,Vector2.Zero)
+    public UiRoot(string rootid) : base()
     {
         routEnt = new();
         id = rootid;
@@ -22,7 +23,7 @@ public class UiRoot : UiElement
     public UiRoot() : this("unnamed")
     {
     }
-
+    
     public override void Added(Scene scene)
     {
         scene.Add(routEnt);

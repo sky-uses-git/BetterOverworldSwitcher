@@ -29,6 +29,19 @@ public static class UiAttr
     {
         public string gotoid;
     }
+    
+    public enum TextAlign
+    {
+        TopLeft,
+        Top,
+        TopRight,
+        Left,
+        Center,
+        Right,
+        BottomLeft,
+        Bottom,
+        BottomRight
+    }
 
     public struct Navigation
     {
@@ -51,7 +64,7 @@ public static class UiAttr
         public float size;
         public Color color;
         public float opacity;
-        
+        public TextAlign align;
         public float shadowdist;
         public Color shadowcolor;
         public float shadowopacity;

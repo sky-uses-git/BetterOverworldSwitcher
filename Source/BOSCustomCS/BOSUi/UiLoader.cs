@@ -24,8 +24,9 @@ public class UiLoader
         {
             case "Root": {
                 me = new UiRoot();
-                me.Size = ScaleOffset.FromScale(1, 1);
+                me.Size = attrs.transform.Size;
                 ((UiRoot)me).SelectFirst = attrs.root.selectFirst;
+                ((UiRoot)me).BackgroundColor = attrs.common.bgColor*attrs.common.opacity;
                 break;
             }
             case "Frame": {
@@ -38,6 +39,10 @@ public class UiLoader
                 me = new UiTextLabel(attrs.text.Value,attrs.text.size,attrs.transform.Position.Offset,attrs.transform.Position.Scale);
                 me.Size = attrs.transform.Size;
                 ((UiTextLabel)me).BackgroundColor = attrs.common.bgColor*attrs.common.opacity;
+                ((UiTextLabel)me).TextAlign = (UiEnum.TextAlign)attrs.text.align;
+                ((UiTextLabel)me).TextColor = attrs.text.color;
+                ((UiTextLabel)me).ShadowColor = attrs.text.shadowcolor*attrs.text.shadowopacity;
+                ((UiTextLabel)me).ShadowGap = attrs.text.shadowdist;
                 break;
             }
             case "FancyButton": {
@@ -67,7 +72,7 @@ public class UiLoader
 
     public UiRoot Load(string id)
     {
-        XmlElement ui = xmlLoader.Load("Graphics/Atlases/Mountain/SkyIsYou/BetterOverworldSwitcher/Ui/" + id);
+        XmlElement ui = xmlLoader.Load(id);
         if (ui == null) return loadnotfound(id);
         try
         {
