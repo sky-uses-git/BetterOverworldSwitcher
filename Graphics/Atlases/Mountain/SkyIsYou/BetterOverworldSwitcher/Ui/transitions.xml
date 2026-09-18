@@ -1,0 +1,22 @@
+<Transitions>
+	<Transition from="*" to="*">
+		<Animations>
+			<Anim name="slideOut">
+				<Element elem="">
+					<Attr value="sclposy" to="1" time="0.5"/>
+				</Element>
+			</Anim>
+			<Anim name="slideIn">
+				<Element elem="">
+					<Attr value="sclposy" to="0" time="0.5"/>
+				</Element>
+			</Anim>
+		</Animations>
+		<From>
+			<Anim name="slideOut"/>
+		</From>
+		<To>
+			<Anim name="slideIn"/>
+		</To>
+	</Transition>
+</Transitions>
