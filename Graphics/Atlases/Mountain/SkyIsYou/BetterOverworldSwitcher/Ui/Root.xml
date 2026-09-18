@@ -1,105 +1,134 @@
 <Root id="mainmenu" select="fileselect">
-	
-	<Include path="common/footer"/>
-	<TextLabel
-		offsposx="-500"
-		offsposy="-40"
-		sclposx="0.5"
-		sclposy="0.15"
-		offssizx="1000"
-		offssizy="80"
-		fontsize="72"
-		value="BetterOverworldSwitcher Host"/>
-	<Frame
-		offsposx="-400"
-		offsposy="-250"
-		sclposx="0.5"
-		sclposy="0.575"
-		offssizx="800"
-		offssizy="500">
-		
-		<FancyButton id="fileselect"
-			up="exit"
-			down="debug"
-			right="vanilla"
-			goto="fileselect"
-			offsposx="-100"
-			offsposy="-0"
-			sclposx="0.5"
-			sclposy="0"
-			offssizx="200"
-			offssizy="80"
-			bgcolor="8B0000"
-			bgopacity="0.5"
-			value="file select"/>
-		<FancyButton id="debug"
-			up="fileselect"
-			down="notfound"
-			right="vanilla"
-			goto="chapselect"
-			offsposx="-100"
-			offsposy="-20"
-			sclposx="0.5"
-			sclposy="0.25"
-			offssizx="200"
-			offssizy="80"
-			bgcolor="FF4500"
-			bgopacity="0.5"
-			value="debug"/>
-		<FancyButton id="notfound"
-			up="debug"
-			down="settings"
-			right="vanilla"
-			goto="asdfjklasdfjklasdfjkl"
-			offsposx="-100"
-			offsposy="-40"
-			sclposx="0.5"
-			sclposy="0.5"
-			offssizx="200"
-			offssizy="80"
-			bgcolor="FFD700"
-			bgopacity="0.5"
-			value="test notfound"/>
-		<FancyButton id="settings"
-			up="notfound"
-			down="exit"
-			right="vanilla"
-			goto="settings"
-			offsposx="-100"
-			offsposy="-60"
-			sclposx="0.5"
-			sclposy="0.75"
-			offssizx="200"
-			offssizy="80"
-			bgcolor="008000"
-			bgopacity="0.5"
-			value="settings"/>
-		<FancyButton id="exit"
-			up="settings"
-			down="fileselect"
-			right="vanilla"
-			offsposx="-100"
-			offsposy="-80"
-			sclposx="0.5"
-			sclposy="1"
-			offssizx="200"
-			offssizy="80"
-			bgcolor="00008B"
-			bgopacity="0.5"
-			value="exit game"/>
-		<FancyButton id="vanilla"
-			up="exit"
-			down="debug"
-			left="fileselect"
-			offsposx="-200"
-			offsposy="-0"
-			sclposx="1"
-			sclposy="0"
-			offssizx="200"
-			offssizy="80"
-			txcolor="000000"
-			bgcolor="87CEEB"
-			bgopacity="0.5"
-			value="back to vanilla"/>
-	</Frame>
+	<Refs>
+		<Anim name="button-select">
+			<Var name="selcolor"/>
+			<Element elem=".">
+				<Tween attr="sclposy" to=".05" time=".2"/>
+				<Attr attr="bgcolor" value="{selcolor}"/>
+			</Element>
+		</Anim>
+		<Anim name="button-deselect">
+			<Var name="bgcolor"/>
+			<Element elem=".">
+				<Tween attr="sclposy" to=".05" time=".2"/>
+				<Attr attr="bgcolor" value="{bgcolor}"/>
+			</Element>
+		</Anim>
+		<Elem name="fancybtn">
+			<Var name="" default=""/>
+			<Var name="sclposx" default="0"/>
+			<Var name="sclposy" default="0"/>
+			<Var name="offsposx" default="0"/>
+			<Var name="offsposy" default="0"/>
+			<Var name="sclsizx" default="0"/>
+			<Var name="sclsizy" default="0"/>
+			<Var name="offssizx" default="0"/>
+			<Var name="offssizy" default="0"/>
+			<Var name="bgcolor" default="000000"/>
+			<Var name="selcolor" default="FFFFFF"/>
+			<Button offsposx="{offsposx}" offsposy="{offsposy}" sclposx="{sclposx}" sclposy="{sclposy}"
+					offssizx="{offssizx}" offssizy="{offssizy}" sclsizx="{sclsizx}" sclsizy="{sclsizy}"
+					bgcolor="{bgcolor}" bgopacity="0.5">
+					<Ref name="button-select" selcolor="{selcolor}" attach="onselect"/>
+					<Ref name="button-deselect" bgcolor="{bgcolor}" attach="onselect"/>
+			</Button>
+		</Elem>
+	</Refs>
+	<Content>
+		<Include path="common/footer"/>
+		<TextLabel offsposx="-500" offsposy="-40"
+				   sclposx="0.5" sclposy="0.15"
+				   offssizx="1000" offssizy="80"
+				   fontsize="72"
+				   value="BetterOverworldSwitcher Host"/>
+		<Frame offsposx="-400" offsposy="-250"
+			   sclposx="0.5" sclposy="0.575"
+			   offssizx="800" offssizy="500">
+			<Ref name="fancybtn" type="elem"/>
+			
+			<FancyButton id="fileselect"
+				up="exit"
+				down="debug"
+				right="vanilla"
+				goto="fileselect"
+				offsposx="-100"
+				offsposy="-0"
+				sclposx="0.5"
+				sclposy="0"
+				offssizx="200"
+				offssizy="80"
+				bgcolor="8B0000"
+				bgopacity="0.5"
+				value="file select"/>
+			<FancyButton id="debug"
+				up="fileselect"
+				down="notfound"
+				right="vanilla"
+				goto="chapselect"
+				offsposx="-100"
+				offsposy="-20"
+				sclposx="0.5"
+				sclposy="0.25"
+				offssizx="200"
+				offssizy="80"
+				bgcolor="FF4500"
+				bgopacity="0.5"
+				value="debug"/>
+			<FancyButton id="notfound"
+				up="debug"
+				down="settings"
+				right="vanilla"
+				goto="asdfjklasdfjklasdfjkl"
+				offsposx="-100"
+				offsposy="-40"
+				sclposx="0.5"
+				sclposy="0.5"
+				offssizx="200"
+				offssizy="80"
+				bgcolor="FFD700"
+				bgopacity="0.5"
+				value="test notfound"/>
+			<FancyButton id="settings"
+				up="notfound"
+				down="exit"
+				right="vanilla"
+				goto="settings"
+				offsposx="-100"
+				offsposy="-60"
+				sclposx="0.5"
+				sclposy="0.75"
+				offssizx="200"
+				offssizy="80"
+				bgcolor="008000"
+				bgopacity="0.5"
+				value="settings"/>
+			<FancyButton id="exit"
+				up="settings"
+				down="fileselect"
+				right="vanilla"
+				offsposx="-100"
+				offsposy="-80"
+				sclposx="0.5"
+				sclposy="1"
+				offssizx="200"
+				offssizy="80"
+				bgcolor="00008B"
+				bgopacity="0.5"
+				value="exit game"/>
+			<FancyButton id="vanilla"
+				up="exit"
+				down="debug"
+				left="fileselect"
+				offsposx="-200"
+				offsposy="-0"
+				sclposx="1"
+				sclposy="0"
+				offssizx="200"
+				offssizy="80"
+				txcolor="000000"
+				bgcolor="87CEEB"
+				bgopacity="0.5"
+				value="back to vanilla"/>
+		</Frame>
+	</Content>
 </Root>
